@@ -227,7 +227,7 @@ body {
 
 .podium {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 0.75rem;
 }
 
@@ -262,6 +262,10 @@ body {
 
 .podium-item:nth-child(4) {
     animation-delay: 0.25s;
+}
+
+.podium-item:nth-child(5) {
+    animation-delay: 0.3s;
 }
 
 @keyframes podiumItem {
@@ -556,7 +560,7 @@ body {
 
 .predictions-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, 1fr);
     gap: 0.5rem;
 }
 

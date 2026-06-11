@@ -124,7 +124,7 @@ function formatarDataHora(dataHora) {
 
 // Renderizar classificação
 function renderizarClassificacao(jogos, palpites) {
-    const jogadores = ['Alan', 'Fernanda', 'Jorge', 'Raquel'];
+    const jogadores = ['Alan', 'Fernanda', 'Jorge', 'Raquel', 'Sueli'];
     const pontuacoes = [];
 
     jogadores.forEach(jogador => {
@@ -176,7 +176,7 @@ function renderizarJogos(jogos, palpites, filtro = 'hoje') {
         return;
     }
 
-    const jogadores = ['Alan', 'Fernanda', 'Jorge', 'Raquel'];
+    const jogadores = ['Alan', 'Fernanda', 'Jorge', 'Raquel', 'Sueli'];
 
     jogosFiltrados.forEach(jogo => {
         const card = document.createElement('div');

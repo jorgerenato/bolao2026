@@ -172,6 +172,16 @@
         "timeA": 2,
         "timeB": 3
       }
+    },
+    "Sueli": {
+      "1": {
+        "timeA": 1,
+        "timeB": 0
+      },
+      "2": {
+        "timeA": 2,
+        "timeB": 1
+      }
     }
   }
 }

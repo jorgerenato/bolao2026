@@ -2,7 +2,7 @@
 const VERSION = window.APP_VERSION || '1';
 
 // Jogadores disponíveis
-const JOGADORES = ['Alan', 'Fernanda', 'Jorge', 'Raquel'];
+const JOGADORES = ['Alan', 'Fernanda', 'Jorge', 'Raquel', 'Sueli'];
 
 // Jogador selecionado - ler da URL ou usar o primeiro
 const urlParams = new URLSearchParams(window.location.search);
@@ -45,7 +45,8 @@ function getDadosExemplo() {
             "Alan": { 1: { timeA: 2, timeB: 1 } },
             "Fernanda": { 1: { timeA: 1, timeB: 1 } },
             "Jorge": { 1: { timeA: 3, timeB: 0 } },
-            "Raquel": { 1: { timeA: 2, timeB: 0 } }
+            "Raquel": { 1: { timeA: 2, timeB: 0 } },
+            "Sueli": { 1: { timeA: 1, timeB: 2 } }
         }
     };
 }
