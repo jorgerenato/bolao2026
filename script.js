@@ -1,3 +1,6 @@
+// Versão da aplicação (definida no index.html)
+const VERSION = window.APP_VERSION || '1';
+
 // Função para ler os dados (do elemento script inline ou do arquivo JSON)
 async function loadDados() {
     // Tenta ler do elemento script inline primeiro
@@ -12,7 +15,7 @@ async function loadDados() {
 
     // Se não tiver dados inline, tenta fetch do arquivo JSON
     try {
-        const response = await fetch('dados.json');
+        const response = await fetch(`dados.json?v=${VERSION}`);
         const data = await response.json();
         return data;
     } catch (error) {
