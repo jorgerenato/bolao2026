@@ -5,7 +5,10 @@
       "dataHora": "2026-06-11T16:00:00",
       "timeA": "México",
       "timeB": "África do Sul",
-      "placar": null,
+      "placar": {
+        "timeA": 2,
+        "timeB": 0
+      },
       "jogado": false
     },
     {
