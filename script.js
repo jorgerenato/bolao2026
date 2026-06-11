@@ -27,50 +27,20 @@ function getDadosExemplo() {
         jogos: [
             {
                 id: 1,
+                dataHora: new Date().toISOString(),
                 timeA: "Brasil",
                 timeB: "Argentina",
                 placar: null,
                 jogado: false
-            },
-            {
-                id: 2,
-                timeA: "França",
-                timeB: "Alemanha",
-                placar: { timeA: 2, timeB: 1 },
-                jogado: true
-            },
-            {
-                id: 3,
-                timeA: "Portugal",
-                timeB: "Espanha",
-                placar: null,
-                jogado: false
-            },
-            {
-                id: 4,
-                timeA: "Inglaterra",
-                timeB: "Holanda",
-                placar: { timeA: 1, timeB: 1 },
-                jogado: true
             }
         ],
         palpites: {
-            "Alan": { 1: { timeA: 2, timeB: 1 }, 2: { timeA: 2, timeB: 2 }, 3: { timeA: 1, timeB: 0 }, 4: { timeA: 2, timeB: 1 } },
-            "Fernanda": { 1: { timeA: 1, timeB: 1 }, 2: { timeA: 2, timeB: 1 }, 3: { timeA: 2, timeB: 1 }, 4: { timeA: 1, timeB: 1 } },
-            "Jorge": { 1: { timeA: 3, timeB: 0 }, 2: { timeA: 1, timeB: 2 }, 3: { timeA: 0, timeB: 2 }, 4: { timeA: 1, timeB: 2 } },
-            "Raquel": { 1: { timeA: 2, timeB: 1 }, 2: { timeA: 2, timeB: 1 }, 3: { timeA: 1, timeB: 1 }, 4: { timeA: 1, timeB: 0 } }
+            "Alan": { 1: { timeA: 2, timeB: 1 } },
+            "Fernanda": { 1: { timeA: 1, timeB: 1 } },
+            "Jorge": { 1: { timeA: 3, timeB: 0 } },
+            "Raquel": { 1: { timeA: 2, timeB: 0 } }
         }
     };
-}
-
-// Calcular resultado de um jogo
-function calcularResultado(jogo) {
-    if (!jogo.placar) return null;
-
-    const { timeA, timeB } = jogo.placar;
-    if (timeA > timeB) return 'A';
-    if (timeB > timeA) return 'B';
-    return 'empate';
 }
 
 // Calcular pontos de um palpite
@@ -94,6 +64,59 @@ function calcularPontos(palpite, jogo) {
     }
 
     return 0;
+}
+
+// Filtrar jogos baseado no filtro selecionado
+function filtrarJogos(jogos, filtro) {
+    const agora = new Date();
+    const hoje = new Date(agora.getFullYear(), agora.getMonth(), agora.getDate());
+
+    switch (filtro) {
+        case 'hoje':
+            return jogos.filter(jogo => {
+                const dataJogo = new Date(jogo.dataHora);
+                const dataJogoDia = new Date(dataJogo.getFullYear(), dataJogo.getMonth(), dataJogo.getDate());
+                return dataJogoDia.getTime() === hoje.getTime();
+            });
+
+        case 'proximos':
+            return jogos.filter(jogo => {
+                const dataJogo = new Date(jogo.dataHora);
+                return dataJogo > agora && !jogo.jogado;
+            }).sort((a, b) => new Date(a.dataHora) - new Date(b.dataHora));
+
+        case 'anteriores':
+            return jogos.filter(jogo => jogo.jogado || new Date(jogo.dataHora) < agora);
+
+        case 'todos':
+        default:
+            return jogos;
+    }
+}
+
+// Formatar data e hora para exibição
+function formatarDataHora(dataHora) {
+    const data = new Date(dataHora);
+    const hoje = new Date();
+    const amanha = new Date(hoje);
+    amanha.setDate(amanha.getDate() + 1);
+
+    const dataJogo = new Date(data.getFullYear(), data.getMonth(), data.getDate());
+    const dataHoje = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
+    const dataAmanha = new Date(amanha.getFullYear(), amanha.getMonth(), amanha.getDate());
+
+    let dataTexto = '';
+    if (dataJogo.getTime() === dataHoje.getTime()) {
+        dataTexto = 'Hoje';
+    } else if (dataJogo.getTime() === dataAmanha.getTime()) {
+        dataTexto = 'Amanhã';
+    } else {
+        const opcoes = { day: '2-digit', month: '2-digit' };
+        dataTexto = data.toLocaleDateString('pt-BR', opcoes);
+    }
+
+    const hora = data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    return `${dataTexto} · ${hora}`;
 }
 
 // Renderizar classificação
@@ -137,22 +160,31 @@ function renderizarClassificacao(jogos, palpites) {
 }
 
 // Renderizar jogos
-function renderizarJogos(jogos, palpites) {
+function renderizarJogos(jogos, palpites, filtro = 'hoje') {
     const matchesList = document.getElementById('matches-list');
     matchesList.innerHTML = '';
 
+    const jogosFiltrados = filtrarJogos(jogos, filtro);
+
+    if (jogosFiltrados.length === 0) {
+        matchesList.innerHTML = '<p style="text-align: center; color: var(--gold-light); padding: 2rem;">Nenhum jogo encontrado para este filtro.</p>';
+        return;
+    }
+
     const jogadores = ['Alan', 'Fernanda', 'Jorge', 'Raquel'];
 
-    jogos.forEach(jogo => {
+    jogosFiltrados.forEach(jogo => {
         const card = document.createElement('div');
         card.className = 'match-card' + (jogo.jogado ? ' played' : '');
 
         const scoreDisplay = jogo.placar
             ? `${jogo.placar.timeA} × ${jogo.placar.timeB}`
-            : '×';
+            : '';
         const scoreClass = jogo.jogado ? 'match-score' : 'match-score pending';
         const statusText = jogo.jogado ? 'Finalizado' : 'A jogar';
         const statusClass = jogo.jogado ? 'played' : 'pending';
+
+        const dataHoraTexto = formatarDataHora(jogo.dataHora);
 
         let predictionsHTML = '';
         jogadores.forEach(jogador => {
@@ -186,14 +218,15 @@ function renderizarJogos(jogos, palpites) {
 
         card.innerHTML = `
             <div class="match-header">
+                <div class="match-date">${dataHoraTexto}</div>
                 <div class="match-teams">
                     <span class="match-team">${jogo.timeA}</span>
                     <span class="match-vs">VS</span>
                     <span class="match-team">${jogo.timeB}</span>
                 </div>
-                <div class="${scoreClass}">${scoreDisplay}</div>
                 <span class="match-status ${statusClass}">${statusText}</span>
             </div>
+            ${scoreDisplay ? `<div class="${scoreClass}">${scoreDisplay}</div>` : ''}
             <div class="predictions-grid">
                 ${predictionsHTML}
             </div>
@@ -203,11 +236,28 @@ function renderizarJogos(jogos, palpites) {
     });
 }
 
+// Inicializar filtros
+function inicializarFiltros(jogos, palpites) {
+    const botoes = document.querySelectorAll('.filter-btn');
+
+    botoes.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Remover classe active de todos
+            botoes.forEach(b => b.classList.remove('active'));
+            // Adicionar classe active no clicado
+            btn.classList.add('active');
+            // Filtrar jogos
+            renderizarJogos(jogos, palpites, btn.dataset.filter);
+        });
+    });
+}
+
 // Inicializar
 async function init() {
     const dados = await loadDados();
     renderizarClassificacao(dados.jogos, dados.palpites);
-    renderizarJogos(dados.jogos, dados.palpites);
+    renderizarJogos(dados.jogos, dados.palpites, 'hoje');
+    inicializarFiltros(dados.jogos, dados.palpites);
 }
 
 init();

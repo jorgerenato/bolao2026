@@ -2,6 +2,7 @@
   "jogos": [
     {
       "id": 1,
+      "dataHora": "2026-06-11T16:00:00",
       "timeA": "México",
       "timeB": "África do Sul",
       "placar": null,
@@ -9,8 +10,49 @@
     },
     {
       "id": 2,
-      "timeA": "Córeia do Sul",
+      "dataHora": "2026-06-11T23:00:00",
+      "timeA": "Coreia do Sul",
       "timeB": "República Tcheca",
+      "placar": null,
+      "jogado": false
+    },
+    {
+      "id": 3,
+      "dataHora": "2026-06-12T16:00:00",
+      "timeA": "Canadá",
+      "timeB": "Bósnia",
+      "placar": null,
+      "jogado": false
+    },
+    {
+      "id": 4,
+      "dataHora": "2026-06-12T22:00:00",
+      "timeA": "Estados Unidos",
+      "timeB": "Paraguai",
+      "placar": null,
+      "jogado": false
+    },
+    {
+      "id": 5,
+      "dataHora": "2026-06-13T16:00:00",
+      "timeA": "Catar",
+      "timeB": "Suíça",
+      "placar": null,
+      "jogado": false
+    },
+    {
+      "id": 6,
+      "dataHora": "2026-06-13T19:00:00",
+      "timeA": "Brasil",
+      "timeB": "Marrocos",
+      "placar": null,
+      "jogado": false
+    },
+    {
+      "id": 7,
+      "dataHora": "2026-06-14T22:00:00",
+      "timeA": "Haiti",
+      "timeB": "Escócia",
       "placar": null,
       "jogado": false
     }
@@ -22,27 +64,27 @@
         "timeB": 1
       },
       "2": {
-        "timeA": 2,
-        "timeB": 1
+        "timeA": 1,
+        "timeB": 0
       }
     },
     "Fernanda": {
       "1": {
-        "timeA": 2,
-        "timeB": 0
+        "timeA": 1,
+        "timeB": 1
       },
       "2": {
-        "timeA": 2,
+        "timeA": 0,
         "timeB": 1
       }
     },
     "Jorge": {
       "1": {
-        "timeA": 1,
+        "timeA": 3,
         "timeB": 0
       },
       "2": {
-        "timeA": 1,
+        "timeA": 2,
         "timeB": 1
       }
     },
@@ -52,8 +94,8 @@
         "timeB": 0
       },
       "2": {
-        "timeA": 2,
-        "timeB": 3
+        "timeA": 1,
+        "timeB": 1
       }
     }
   }

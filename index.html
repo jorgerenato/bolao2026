@@ -39,6 +39,12 @@
         <!-- Jogos -->
         <section class="matches-section">
             <h2 class="section-title">JOGOS & PALPITES</h2>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="hoje">📅 Hoje</button>
+                <button class="filter-btn" data-filter="proximos">🔜 Próximos</button>
+                <button class="filter-btn" data-filter="anteriores">✅ Jogados</button>
+                <button class="filter-btn" data-filter="todos">📋 Todos</button>
+            </div>
             <div class="matches-list" id="matches-list">
                 <!-- Populated by JS -->
             </div>
@@ -67,45 +73,6 @@
     <footer class="footer">
         <p>Bolão Copa 2026 — Feito com ⚽</p>
     </footer>
-
-    <script id="dados" type="application/json">
-{
-  "jogos": [
-    {
-      "id": 1,
-      "timeA": "México",
-      "timeB": "África do Sul",
-      "placar": null,
-      "jogado": false
-    },
-    {
-      "id": 2,
-      "timeA": "Córeia do Sul",
-      "timeB": "República Tcheca",
-      "placar": null,
-      "jogado": false
-    }
-  ],
-  "palpites": {
-    "Alan": {
-      "1": { "timeA": 2, "timeB": 1 },
-      "2": { "timeA": 2, "timeB": 1 }
-    },
-    "Fernanda": {
-      "1": { "timeA": 2, "timeB": 0 },
-      "2": { "timeA": 2, "timeB": 1 }
-    },
-    "Jorge": {
-      "1": { "timeA": 1, "timeB": 0 },
-      "2": { "timeA": 1, "timeB": 1 }
-    },
-    "Raquel": {
-      "1": { "timeA": 2, "timeB": 0 },
-      "2": { "timeA": 2, "timeB": 3 }
-    }
-  }
-}
-    </script>
 
     <script src="script.js"></script>
 </body>
