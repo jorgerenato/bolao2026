@@ -1,0 +1,60 @@
+{
+  "jogos": [
+    {
+      "id": 1,
+      "timeA": "México",
+      "timeB": "África do Sul",
+      "placar": null,
+      "jogado": false
+    },
+    {
+      "id": 2,
+      "timeA": "Córeia do Sul",
+      "timeB": "República Tcheca",
+      "placar": null,
+      "jogado": false
+    }
+  ],
+  "palpites": {
+    "Alan": {
+      "1": {
+        "timeA": 2,
+        "timeB": 1
+      },
+      "2": {
+        "timeA": 2,
+        "timeB": 1
+      }
+    },
+    "Fernanda": {
+      "1": {
+        "timeA": 2,
+        "timeB": 0
+      },
+      "2": {
+        "timeA": 2,
+        "timeB": 1
+      }
+    },
+    "Jorge": {
+      "1": {
+        "timeA": 1,
+        "timeB": 0
+      },
+      "2": {
+        "timeA": 1,
+        "timeB": 1
+      }
+    },
+    "Raquel": {
+      "1": {
+        "timeA": 2,
+        "timeB": 0
+      },
+      "2": {
+        "timeA": 2,
+        "timeB": 3
+      }
+    }
+  }
+}
