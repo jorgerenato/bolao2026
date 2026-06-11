@@ -1,5 +1,5 @@
 // Versão da aplicação (definida no index.html)
-const VERSION = window.APP_VERSION || '1';
+const VERSION = window.APP_VERSION || '2';
 
 // Função para ler os dados (do elemento script inline ou do arquivo JSON)
 async function loadDados() {
@@ -151,14 +151,16 @@ function renderizarClassificacao(jogos, palpites) {
         else if (index === 1) classes.push('silver');
         else if (index === 2) classes.push('bronze');
 
-        const div = document.createElement('div');
-        div.className = classes.join(' ');
-        div.innerHTML = `
+        const link = document.createElement('a');
+        link.href = `estatisticas.html?jogador=${encodeURIComponent(item.jogador)}`;
+        link.className = classes.join(' ');
+        link.innerHTML = `
             <span class="podium-rank">${index + 1}</span>
             <div class="podium-name">${item.jogador}</div>
             <div class="podium-points">${item.pontos}<span>pts</span></div>
+            <span class="podium-link">→</span>
         `;
-        podium.appendChild(div);
+        podium.appendChild(link);
     });
 }
 

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estatísticas - BOLÃO COPA 2026</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <script>
+        window.APP_VERSION = '1';
+    </script>
+    <link rel="stylesheet" href="styles.css?v=1">
+    <link rel="stylesheet" href="estatisticas.css?v=1">
+</head>
+
+<body>
+    <div class="bg-pattern"></div>
+
+    <header class="header">
+        <div class="header-content">
+            <a href="index.html" class="back-link">← Voltar ao Bolão</a>
+            <h1 class="main-title">ESTATÍSTICAS<br><span class="highlight">INDIVIDUAIS</span></h1>
+            <p class="subtitle">Desempenho de cada jogador</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Seletor de Jogador -->
+        <section class="player-selector-section">
+            <div class="player-tabs" id="player-tabs">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+
+        <!-- Estatísticas do Jogador -->
+        <section class="stats-section" id="stats-section">
+            <div class="player-header" id="player-header">
+                <!-- Populated by JS -->
+            </div>
+
+            <div class="stats-grid">
+                <!-- Pontuação Total -->
+                <div class="stat-card stat-primary">
+                    <div class="stat-icon">🏆</div>
+                    <div class="stat-value" id="stat-total">0</div>
+                    <div class="stat-label">Pontos Totais</div>
+                </div>
+
+                <!-- Posição no Ranking -->
+                <div class="stat-card">
+                    <div class="stat-icon">📍</div>
+                    <div class="stat-value" id="stat-rank">#1</div>
+                    <div class="stat-label">Posição no Ranking</div>
+                </div>
+
+                <!-- Palpites Feitos -->
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-value" id="stat-predictions">0</div>
+                    <div class="stat-label">Palpites Feitos</div>
+                </div>
+
+                <!-- Taxa de Acerto -->
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-value" id="stat-rate">0%</div>
+                    <div class="stat-label">Taxa de Acerto</div>
+                </div>
+            </div>
+
+            <!-- Acertos Detalhados -->
+            <div class="detailed-stats">
+                <h3 class="subsection-title">Acertos Detalhados</h3>
+                <div class="accuracy-grid">
+                    <div class="accuracy-card accuracy-exact">
+                        <div class="accuracy-badge">+3</div>
+                        <div class="accuracy-value" id="stat-exact">0</div>
+                        <div class="accuracy-label">Placares Exatos</div>
+                    </div>
+                    <div class="accuracy-card accuracy-winner">
+                        <div class="accuracy-badge">+1</div>
+                        <div class="accuracy-value" id="stat-winner">0</div>
+                        <div class="accuracy-label">Vencedor/Empate</div>
+                    </div>
+                    <div class="accuracy-card accuracy-zero">
+                        <div class="accuracy-badge">0</div>
+                        <div class="accuracy-value" id="stat-zero">0</div>
+                        <div class="accuracy-label">Erros</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico de Desempenho -->
+            <div class="performance-section">
+                <h3 class="subsection-title">Desempenho por Jogo</h3>
+                <div class="performance-chart" id="performance-chart">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Histórico de Jogos -->
+            <div class="history-section">
+                <h3 class="subsection-title">Histórico de Jogos</h3>
+                <div class="history-list" id="history-list">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Melhores Momentos -->
+            <div class="highlights-section">
+                <h3 class="subsection-title">Destaques</h3>
+                <div class="highlights-grid" id="highlights-grid">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <p>Bolão Copa 2026 — Estatísticas Individuais</p>
+    </footer>
+
+    <script src="estatisticas.js?v=1"></script>
+</body>
+
+</html>

@@ -50,9 +50,81 @@
     },
     {
       "id": 7,
-      "dataHora": "2026-06-14T22:00:00",
+      "dataHora": "2026-06-13T22:00:00",
       "timeA": "Haiti",
       "timeB": "Escócia",
+      "placar": null,
+      "jogado": false
+    },
+    {
+      "id": 8,
+      "dataHora": "2026-06-14T01:00:00",
+      "timeA": "Haiti",
+      "timeB": "Escócia",
+      "placar": null,
+      "jogado": false
+    },
+    {
+      "id": 9,
+      "dataHora": "2026-06-14T14:00:00",
+      "timeA": "Alemanha",
+      "timeB": "Curaçao",
+      "placar": null,
+      "jogado": false
+    },
+    {
+      "id": 10,
+      "dataHora": "2026-06-14T17:00:00",
+      "timeA": "Holanda",
+      "timeB": "Japão",
+      "placar": null,
+      "jogado": false
+    },
+    {
+      "id": 11,
+      "dataHora": "2026-06-14T20:00:00",
+      "timeA": "Costa do Marfim",
+      "timeB": "Equador",
+      "placar": null,
+      "jogado": false
+    },
+    {
+      "id": 12,
+      "dataHora": "2026-06-14T23:00:00",
+      "timeA": "Suécia",
+      "timeB": "Tunísia",
+      "placar": null,
+      "jogado": false
+    },
+    {
+      "id": 13,
+      "dataHora": "2026-06-15T13:00:00",
+      "timeA": "Espanha",
+      "timeB": "Cabo Verde",
+      "placar": null,
+      "jogado": false
+    },
+    {
+      "id": 14,
+      "dataHora": "2026-06-15T16:00:00",
+      "timeA": "Bégica",
+      "timeB": "Egito",
+      "placar": null,
+      "jogado": false
+    },
+    {
+      "id": 15,
+      "dataHora": "2026-06-15T19:00:00",
+      "timeA": "Arábia Saudita",
+      "timeB": "Uruguai",
+      "placar": null,
+      "jogado": false
+    },
+    {
+      "id": 16,
+      "dataHora": "2026-06-15T22:00:00",
+      "timeA": "Irã",
+      "timeB": "Nova Zelândia",
       "placar": null,
       "jogado": false
     }
