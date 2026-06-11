@@ -55,7 +55,7 @@ function getDadosExemplo() {
             }
         ],
         palpites: {
-            "Allan": { 1: { timeA: 2, timeB: 1 }, 2: { timeA: 2, timeB: 2 }, 3: { timeA: 1, timeB: 0 }, 4: { timeA: 2, timeB: 1 } },
+            "Alan": { 1: { timeA: 2, timeB: 1 }, 2: { timeA: 2, timeB: 2 }, 3: { timeA: 1, timeB: 0 }, 4: { timeA: 2, timeB: 1 } },
             "Fernanda": { 1: { timeA: 1, timeB: 1 }, 2: { timeA: 2, timeB: 1 }, 3: { timeA: 2, timeB: 1 }, 4: { timeA: 1, timeB: 1 } },
             "Jorge": { 1: { timeA: 3, timeB: 0 }, 2: { timeA: 1, timeB: 2 }, 3: { timeA: 0, timeB: 2 }, 4: { timeA: 1, timeB: 2 } },
             "Raquel": { 1: { timeA: 2, timeB: 1 }, 2: { timeA: 2, timeB: 1 }, 3: { timeA: 1, timeB: 1 }, 4: { timeA: 1, timeB: 0 } }
@@ -98,7 +98,7 @@ function calcularPontos(palpite, jogo) {
 
 // Renderizar classificação
 function renderizarClassificacao(jogos, palpites) {
-    const jogadores = ['Allan', 'Fernanda', 'Jorge', 'Raquel'];
+    const jogadores = ['Alan', 'Fernanda', 'Jorge', 'Raquel'];
     const pontuacoes = [];
 
     jogadores.forEach(jogador => {
@@ -141,7 +141,7 @@ function renderizarJogos(jogos, palpites) {
     const matchesList = document.getElementById('matches-list');
     matchesList.innerHTML = '';
 
-    const jogadores = ['Allan', 'Fernanda', 'Jorge', 'Raquel'];
+    const jogadores = ['Alan', 'Fernanda', 'Jorge', 'Raquel'];
 
     jogos.forEach(jogo => {
         const card = document.createElement('div');
