@@ -149,9 +149,9 @@ function calcularEstatisticasJogador(jogador, jogos, palpites) {
         }
     });
 
-    // Taxa de acerto (considerando jogos que acertou algo / jogos jogados)
+    // Taxa de acerto (baseado na pontuação máxima possível: 3 pontos por jogo)
     const taxaAcerto = jogosJogados > 0
-        ? Math.round(((placaresExatos + acertosVencedor) / jogosJogados) * 100)
+        ? Math.round((pontosTotal / (jogosJogados * 3)) * 100)
         : 0;
 
     // Melhor palpite (placar exato com maior soma de gols)
