@@ -1,5 +1,76 @@
 // Versão da aplicação
-const VERSION = window.APP_VERSION || '1';
+const VERSION = window.APP_VERSION || '3';
+
+// Mapeamento de países para bandeiras (emojis)
+const BANDEIRAS = {
+    'Alemanha': '🇩🇪',
+    'Arábia Saudita': '🇸🇦',
+    'Argélia': '🇩🇿',
+    'Argentina': '🇦🇷',
+    'Austrália': '🇦🇺',
+    'Bélgica': '🇧🇪',
+    'Bégica': '🇧🇪',
+    'Bósnia': '🇧🇦',
+    'Brasil': '🇧🇷',
+    'Cabo Verde': '🇨🇻',
+    'Canadá': '🇨🇦',
+    'Catar': '🇶🇦',
+    'Chile': '🇨🇱',
+    'Colômbia': '🇨🇴',
+    'Coreia do Sul': '🇰🇷',
+    'Costa do Marfim': '🇨🇮',
+    'Croácia': '🇭🇷',
+    'Curaçao': '🇨🇼',
+    'Dinamarca': '🇩🇰',
+    'Egito': '🇪🇬',
+    'El Salvador': '🇸🇻',
+    'Equador': '🇪🇨',
+    'Escócia': '🏴󠁧󠁢󠁳󠁣󠁴󠁿',
+    'Espanha': '🇪🇸',
+    'Estados Unidos': '🇺🇸',
+    'EUA': '🇺🇸',
+    'Finlândia': '🇫🇮',
+    'França': '🇫🇷',
+    'Grécia': '🇬🇷',
+    'Holanda': '🇳🇱',
+    'Holanda/Países Baixos': '🇳🇱',
+    'Países Baixos': '🇳🇱',
+    'Honduras': '🇭🇳',
+    'Haiti': '🇭🇹',
+    'Inglaterra': '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
+    'Irã': '🇮🇷',
+    'Iraque': '🇮🇶',
+    'Itália': '🇮🇹',
+    'Japão': '🇯🇵',
+    'Jordânia': '🇯🇴',
+    'México': '🇲🇽',
+    'Marrocos': '🇲🇦',
+    'Nicarágua': '🇳🇮',
+    'Nigéria': '🇳🇬',
+    'Nova Zelândia': '🇳🇿',
+    'Panamá': '🇵🇦',
+    'Paraguai': '🇵🇾',
+    'Peru': '🇵🇪',
+    'Polônia': '🇵🇱',
+    'Portugal': '🇵🇹',
+    'República Tcheca': '🇨🇿',
+    'Romênia': '🇷🇴',
+    'Rússia': '🇷🇺',
+    'Senegal': '🇸🇳',
+    'Sérvia': '🇷🇸',
+    'Suécia': '🇸🇪',
+    'Suíça': '🇨🇭',
+    'Tunísia': '🇹🇳',
+    'Turquia': '🇹🇷',
+    'Ucrânia': '🇺🇦',
+    'Uruguai': '🇺🇾',
+    'África do Sul': '🇿🇦',
+};
+
+// Função para obter a bandeira de um país
+function getBandeira(pais) {
+    return BANDEIRAS[pais] || '⚽';
+}
 
 // Jogadores disponíveis
 const JOGADORES = ['Alan', 'Fernanda', 'Jorge', 'Raquel', 'Sueli'];
@@ -312,7 +383,7 @@ function renderizarHistory(stats) {
         historyItem.innerHTML = `
             <div class="history-date">${dataFormatada}</div>
             <div class="history-match">
-                <div class="history-teams">${item.jogo.timeA} vs ${item.jogo.timeB}</div>
+                <div class="history-teams">${getBandeira(item.jogo.timeA)} ${item.jogo.timeA} vs ${item.jogo.timeB} ${getBandeira(item.jogo.timeB)}</div>
                 <div class="history-prediction">Palpite: ${palpiteDisplay} ${item.jogo.placar ? `· Real: ${realDisplay}` : ''}</div>
             </div>
             <div class="history-result ${item.acertou}">${resultadoDisplay}</div>

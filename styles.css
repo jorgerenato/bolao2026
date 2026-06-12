@@ -185,7 +185,70 @@ body {
 
 /* Leaderboard */
 .leaderboard-section {
+    margin-bottom: 2rem;
+}
+
+/* Stats Overview */
+.stats-overview-section {
     margin-bottom: 3rem;
+}
+
+.stats-overview-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.stat-overview-card {
+    background: linear-gradient(135deg, var(--cream) 0%, #f5e6d3 100%);
+    border-radius: 12px;
+    padding: 1.25rem;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: statOverviewFade 0.5s ease-out backwards;
+}
+
+.stat-overview-card:nth-child(1) { animation-delay: 0.1s; }
+.stat-overview-card:nth-child(2) { animation-delay: 0.15s; }
+.stat-overview-card:nth-child(3) { animation-delay: 0.2s; }
+.stat-overview-card:nth-child(4) { animation-delay: 0.25s; }
+
+@keyframes statOverviewFade {
+    0% { opacity: 0; transform: translateY(10px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.stat-overview-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.stat-overview-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-overview-label {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: var(--gray);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.stat-overview-value {
+    font-family: 'Archivo Black', sans-serif;
+    font-size: 1.25rem;
+    color: var(--emerald);
+    margin-bottom: 0.25rem;
+}
+
+.stat-overview-sub {
+    font-size: 0.75rem;
+    color: var(--gray);
+    font-weight: 500;
 }
 
 .section-header {
@@ -558,6 +621,27 @@ body {
     color: var(--white);
 }
 
+.match-status.live {
+    background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+    color: var(--white);
+    animation: pulseLive 1.5s ease-in-out infinite;
+    font-weight: 700;
+}
+
+@keyframes pulseLive {
+    0%, 100% {
+        box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+    }
+    50% {
+        box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+    }
+}
+
+.match-card.live {
+    border-left: 4px solid #ef4444;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+}
+
 .predictions-grid {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
@@ -674,6 +758,12 @@ body {
     font-size: 0.875rem;
     position: relative;
     z-index: 1;
+}
+
+.last-update {
+    margin-top: 0.5rem;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
 }
 
 /* Responsive */

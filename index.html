@@ -11,9 +11,9 @@
         href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Space+Grotesk:wght@400;500;700&display=swap"
         rel="stylesheet">
     <script>
-        window.APP_VERSION = '2';
+        window.APP_VERSION = '5';
     </script>
-    <link rel="stylesheet" href="styles.css?v=2">
+    <link rel="stylesheet" href="styles.css?v=5">
 </head>
 
 <body>
@@ -35,6 +35,14 @@
                 <div class="trophy">🏆</div>
             </div>
             <div class="podium" id="podium">
+                <!-- Populated by JS -->
+            </div>
+        </section>
+
+        <!-- Estatísticas Gerais -->
+        <section class="stats-overview-section">
+            <h2 class="section-title">ESTATÍSTICAS GERAIS</h2>
+            <div class="stats-overview-grid" id="stats-overview">
                 <!-- Populated by JS -->
             </div>
         </section>
@@ -75,9 +83,10 @@
 
     <footer class="footer">
         <p>Bolão Copa 2026 — Feito com ⚽</p>
+        <p class="last-update" id="last-update">Atualizado: carregando...</p>
     </footer>
 
-    <script src="script.js?v=2"></script>
+    <script src="script.js?v=5"></script>
 </body>
 
 </html>
