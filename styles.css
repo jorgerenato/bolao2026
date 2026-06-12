@@ -224,6 +224,26 @@ body {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
+.stat-overview-card.stat-random {
+    background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    position: relative;
+}
+
+.stat-overview-card.stat-random::before {
+    content: '🎲';
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    font-size: 1rem;
+    background: var(--gold);
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .stat-overview-icon {
     font-size: 1.75rem;
     margin-bottom: 0.5rem;

@@ -202,6 +202,363 @@ function formatarDataHora(dataHora) {
     return `${dataTexto} · ${hora}`;
 }
 
+// ========== FUNÇÕES DE ESTATÍSTICAS ALEATÓRIAS ==========
+
+// 1. O Consenso - Placar que todos previram igual
+function calcConsenso(jogos, palpites, jogadores) {
+    const consensos = [];
+    jogos.forEach(jogo => {
+        const palpitesJogo = jogadores.map(j => palpites[j]?.[jogo.id]).filter(p => p);
+        if (palpitesJogo.length < 2) return;
+
+        const primeiro = palpitesJogo[0];
+        const todosIguais = palpitesJogo.every(p => p.timeA === primeiro.timeA && p.timeB === primeiro.timeB);
+
+        if (todosIguais) {
+            consensos.push({ jogo, placar: `${primeiro.timeA}×${primeiro.timeB}` });
+        }
+    });
+
+    if (consensos.length === 0) return null;
+    const aleatorio = consensos[Math.floor(Math.random() * consensos.length)];
+    return {
+        icon: '🎯',
+        label: 'O Consenso',
+        value: aleatorio.placar,
+        sub: `Todos concordaram!`
+    };
+}
+
+// 2. A Zebra - Jogo onde TODOS erraram o vencedor
+function calcZebra(jogos, palpites, jogadores) {
+    const zebras = [];
+    jogos.forEach(jogo => {
+        if (!jogo.jogado || !jogo.placar) return;
+
+        const vencedorReal = jogo.placar.timeA > jogo.placar.timeB ? 'A' :
+            (jogo.placar.timeB > jogo.placar.timeA ? 'B' : 'E');
+
+        const todosErraram = jogadores.every(jogador => {
+            const palpite = palpites[jogador]?.[jogo.id];
+            if (!palpite) return true;
+
+            const vencedorPalpite = palpite.timeA > palpite.timeB ? 'A' :
+                (palpite.timeB > palpite.timeA ? 'B' : 'E');
+            return vencedorPalpite !== vencedorReal;
+        });
+
+        if (todosErraram && jogadores.some(j => palpites[j]?.[jogo.id])) {
+            zebras.push({ jogo, vencedor: vencedorReal === 'E' ? 'Empate' : (vencedorReal === 'A' ? jogo.timeA : jogo.timeB) });
+        }
+    });
+
+    if (zebras.length === 0) return null;
+    const aleatorio = zebras[Math.floor(Math.random() * zebras.length)];
+    return {
+        icon: '😱',
+        label: 'A Zebra',
+        value: `${aleatorio.jogo.timeA} vs ${aleatorio.jogo.timeB}`,
+        sub: 'Ninguém acertou o vencedor!'
+    };
+}
+
+// 3. O Otimista - Quem mais prevê placares com muitos gols
+function calcOtimista(jogos, palpites, jogadores) {
+    const medias = {};
+    jogadores.forEach(jogador => {
+        let totalGols = 0;
+        let count = 0;
+        jogos.forEach(jogo => {
+            const palpite = palpites[jogador]?.[jogo.id];
+            if (palpite) {
+                totalGols += palpite.timeA + palpite.timeB;
+                count++;
+            }
+        });
+        if (count > 0) medias[jogador] = totalGols / count;
+    });
+
+    const maxMedia = Math.max(...Object.values(medias));
+    const otimistas = Object.entries(medias).filter(([j, m]) => m === maxMedia).map(([j]) => j);
+
+    return {
+        icon: '🎪',
+        label: 'O Otimista',
+        value: otimistas.length > 2 ? `${otimistas[0]} e ${otimistas[1]}` : otimistas.join(' e '),
+        sub: `${maxMedia.toFixed(1)} gols/jogo (média)`
+    };
+}
+
+// 4. O Conservador - Quem mais prevê placares com poucos gols
+function calcConservador(jogos, palpites, jogadores) {
+    const medias = {};
+    jogadores.forEach(jogador => {
+        let totalGols = 0;
+        let count = 0;
+        jogos.forEach(jogo => {
+            const palpite = palpites[jogador]?.[jogo.id];
+            if (palpite) {
+                totalGols += palpite.timeA + palpite.timeB;
+                count++;
+            }
+        });
+        if (count > 0) medias[jogador] = totalGols / count;
+    });
+
+    const minMedia = Math.min(...Object.values(medias));
+    const conservadores = Object.entries(medias).filter(([j, m]) => m === minMedia).map(([j]) => j);
+
+    return {
+        icon: '🛡️',
+        label: 'O Conservador',
+        value: conservadores.length > 2 ? `${conservadores[0]} e ${conservadores[1]}` : conservadores.join(' e '),
+        sub: `${minMedia.toFixed(1)} gols/jogo (média)`
+    };
+}
+
+// 5. O Troller - Quem mais prevê placares improváveis (soma >= 6)
+function calcTroller(jogos, palpites, jogadores) {
+    const trolls = {};
+    jogadores.forEach(jogador => {
+        let count = 0;
+        jogos.forEach(jogo => {
+            const palpite = palpites[jogador]?.[jogo.id];
+            if (palpite) {
+                const total = palpite.timeA + palpite.timeB;
+                if (total >= 6) {
+                    count++;
+                }
+            }
+        });
+        trolls[jogador] = count;
+    });
+
+    const maxTroll = Math.max(...Object.values(trolls));
+    if (maxTroll === 0) return null;
+
+    const vencedores = Object.entries(trolls).filter(([j, c]) => c === maxTroll).map(([j]) => j);
+
+    return {
+        icon: '😈',
+        label: 'O Troller',
+        value: vencedores.length > 2 ? `${vencedores[0]} e ${vencedores[1]}` : vencedores.join(' e '),
+        sub: `${maxTroll} palpite${maxTroll !== 1 ? 's' : ''} maluco${maxTroll !== 1 ? 's' : ''}`
+    };
+}
+
+// 6. O Sortudo - Quem foi o ÚNICO a acertar o resultado de um jogo
+function calcSortudo(jogos, palpites, jogadores) {
+    const sortudos = {};
+    jogadores.forEach(jogador => {
+        let count = 0;
+        jogos.forEach(jogo => {
+            if (!jogo.jogado || !jogo.placar) return;
+
+            // Verificar pontos de todos para este jogo
+            const pontosTodos = jogadores.map(j => {
+                const palpite = palpites[j]?.[jogo.id];
+                if (!palpite) return null;
+                return calcularPontos(palpite, jogo);
+            }).filter(p => p !== null);
+
+            // Este jogador acertou?
+            const meusPontos = calcularPontos(palpites[jogador]?.[jogo.id], jogo);
+            if (!meusPontos || meusPontos === 0) return;
+
+            // Verificar se fui o ÚNICO a acertar (todos os outros = 0)
+            const outrosAcertaram = pontosTodos.filter((p, i) => {
+                const outroJogador = jogadores[i];
+                if (outroJogador === jogador) return false;
+                return p > 0;
+            }).length;
+
+            if (outrosAcertaram === 0) {
+                count++;
+            }
+        });
+        sortudos[jogador] = count;
+    });
+
+    const maxSorte = Math.max(...Object.values(sortudos));
+    if (maxSorte === 0) return null;
+
+    const vencedores = Object.entries(sortudos).filter(([j, c]) => c === maxSorte).map(([j]) => j);
+
+    return {
+        icon: '🍀',
+        label: 'O Único',
+        value: vencedores.length > 2 ? `${vencedores[0]} e ${vencedores[1]}` : vencedores.join(' e '),
+        sub: `${maxSorte}x foi o único acertador!`
+    };
+}
+
+// 7. O Azarado - Quem acertou o vencedor mas errou o placar por 1 gol
+function calcAzarado(jogos, palpites, jogadores) {
+    const azarados = {};
+    jogadores.forEach(jogador => {
+        let count = 0;
+        jogos.forEach(jogo => {
+            const palpite = palpites[jogador]?.[jogo.id];
+            if (palpite && jogo.jogado && jogo.placar) {
+                // Verificar se acertou o vencedor
+                const resultadoReal = jogo.placar.timeA > jogo.placar.timeB ? 'A' :
+                    (jogo.placar.timeB > jogo.placar.timeA ? 'B' : 'E');
+                const resultadoPalpite = palpite.timeA > palpite.timeB ? 'A' :
+                    (palpite.timeB > palpite.timeA ? 'B' : 'E');
+
+                if (resultadoReal === resultadoPalpite && resultadoReal !== 'E') {
+                    // Acertou o vencedor - verificar se errou por 1 gol no total
+                    const diffA = Math.abs(palpite.timeA - jogo.placar.timeA);
+                    const diffB = Math.abs(palpite.timeB - jogo.placar.timeB);
+                    const diffTotal = diffA + diffB;
+
+                    // Errou por exatamente 1 gol no total
+                    if (diffTotal === 1) count++;
+                }
+            }
+        });
+        azarados[jogador] = count;
+    });
+
+    const maxAzar = Math.max(...Object.values(azarados));
+    if (maxAzar === 0) return null;
+
+    const vencedores = Object.entries(azarados).filter(([j, c]) => c === maxAzar).map(([j]) => j);
+
+    return {
+        icon: '😫',
+        label: 'Por Um Gol',
+        value: vencedores.length > 2 ? `${vencedores[0]} e ${vencedores[1]}` : vencedores.join(' e '),
+        sub: `${maxAzar} vez${maxAzar !== 1 ? 'es' : ''}!`
+    };
+}
+
+// 8. Festão - Jogo com maior soma de gols previsto
+function calcFestao(jogos, palpites, jogadores) {
+    const maxGols = { jogo: null, total: 0 };
+
+    jogos.forEach(jogo => {
+        let soma = 0;
+        let count = 0;
+        jogadores.forEach(jogador => {
+            const palpite = palpites[jogador]?.[jogo.id];
+            if (palpite) {
+                soma += palpite.timeA + palpite.timeB;
+                count++;
+            }
+        });
+        const media = count > 0 ? soma / count : 0;
+        if (media > maxGols.total) {
+            maxGols.jogo = jogo;
+            maxGols.total = media;
+        }
+    });
+
+    if (!maxGols.jogo) return null;
+
+    return {
+        icon: '⚽',
+        label: 'Show de Gols',
+        value: `${maxGols.jogo.timeA} vs ${maxGols.jogo.timeB}`,
+        sub: `${maxGols.total.toFixed(1)} gols/jogo, maior média de gols por palpite`
+    };
+}
+
+// 9. Defesa Total - Jogo com menor soma de gols previsto
+function calcDefesaTotal(jogos, palpites, jogadores) {
+    const minGols = { jogo: null, total: Infinity };
+
+    jogos.forEach(jogo => {
+        let soma = 0;
+        let count = 0;
+        jogadores.forEach(jogador => {
+            const palpite = palpites[jogador]?.[jogo.id];
+            if (palpite) {
+                soma += palpite.timeA + palpite.timeB;
+                count++;
+            }
+        });
+        const media = count > 0 ? soma / count : Infinity;
+        if (media < minGols.total && count > 0) {
+            minGols.jogo = jogo;
+            minGols.total = media;
+        }
+    });
+
+    if (!minGols.jogo) return null;
+
+    return {
+        icon: '🧱',
+        label: 'Defesa Total',
+        value: `${minGols.jogo.timeA} vs ${minGols.jogo.timeB}`,
+        sub: `${minGols.total.toFixed(1)} gols/jogo, menor média de gols por palpite`
+    };
+}
+
+// 10. O Apostador - Quem mais prevê placares diferentes (não repete)
+function calcApostador(jogos, palpites, jogadores) {
+    const unicos = {};
+    jogadores.forEach(jogador => {
+        const placares = new Set();
+        jogos.forEach(jogo => {
+            const palpite = palpites[jogador]?.[jogo.id];
+            if (palpite) {
+                placares.add(`${palpite.timeA}×${palpite.timeB}`);
+            }
+        });
+        unicos[jogador] = placares.size;
+    });
+
+    const maxUnicos = Math.max(...Object.values(unicos));
+    if (maxUnicos === 0) return null;
+
+    const vencedores = Object.entries(unicos).filter(([j, u]) => u === maxUnicos).map(([j]) => j);
+
+    return {
+        icon: '🎰',
+        label: 'O Apostador',
+        value: vencedores.length > 2 ? `${vencedores[0]} e ${vencedores[1]}` : vencedores.join(' e '),
+        sub: `${maxUnicos} palpite${maxUnicos !== 1 ? 's' : ''} diferente${maxUnicos !== 1 ? 's' : ''}`
+    };
+}
+
+// Pool de estatísticas aleatórias
+const ESTATISTICAS_ALEATORIAS = [
+    calcConsenso,
+    calcZebra,
+    calcOtimista,
+    calcConservador,
+    calcTroller,
+    calcSortudo,
+    calcAzarado,
+    calcFestao,
+    calcDefesaTotal,
+    calcApostador
+];
+
+// Sortear estatísticas aleatórias diferentes
+function sortearEstatisticas(jogos, palpites, jogadores, quantidade = 2) {
+    const disponiveis = [];
+
+    // Calcular todas as estatísticas disponíveis
+    ESTATISTICAS_ALEATORIAS.forEach(fn => {
+        try {
+            const resultado = fn(jogos, palpites, jogadores);
+            if (resultado) {
+                disponiveis.push(resultado);
+            }
+        } catch (e) {
+            console.error('Erro ao calcular estatística:', e);
+        }
+    });
+
+    // Embaralhar e pegar a quantidade desejada
+    const embaralhado = disponiveis.sort(() => Math.random() - 0.5);
+    return embaralhado.slice(0, quantidade);
+}
+
+// ========== FIM DAS ESTATÍSTICAS ALEATÓRIAS ==========
+
 // Calcular e renderizar estatísticas gerais
 function renderizarEstatisticasGerais(jogos, palpites) {
     const jogadores = ['Alan', 'Fernanda', 'Jorge', 'Raquel', 'Sueli'];
@@ -264,20 +621,22 @@ function renderizarEstatisticasGerais(jogos, palpites) {
         }
     });
 
-    // Renderizar
+    // Sortear 2 estatísticas aleatórias
+    const aleatorias = sortearEstatisticas(jogos, palpites, jogadores, 2);
+
     const container = document.getElementById('stats-overview');
-    container.innerHTML = `
+    let html = `
         <div class="stat-overview-card">
             <div class="stat-overview-icon">🎯</div>
             <div class="stat-overview-label">Mais Placares Exatos</div>
             <div class="stat-overview-value">${stats.maisExatos.jogadores.length > 1 ? stats.maisExatos.jogadores.slice(0, 2).join(' e ') : (stats.maisExatos.jogadores[0] || '-')}</div>
-            <div class="stat-overview-sub">${stats.maisExatos.total} acertos${stats.maisExatos.jogadores.length > 2 ? ` (+${stats.maisExatos.jogadores.length - 2})` : ''}</div>
+            <div class="stat-overview-sub">${stats.maisExatos.total} acerto${stats.maisExatos.total !== 1 ? 's' : ''}${stats.maisExatos.jogadores.length > 2 ? ` (+${stats.maisExatos.jogadores.length - 2})` : ''}</div>
         </div>
         <div class="stat-overview-card">
             <div class="stat-overview-icon">🛡️</div>
             <div class="stat-overview-label">Menos Erros</div>
             <div class="stat-overview-value">${stats.menosErros.jogadores.length > 1 ? stats.menosErros.jogadores.slice(0, 2).join(' e ') : (stats.menosErros.jogadores[0] || '-')}</div>
-            <div class="stat-overview-sub">${stats.menosErros.total === Infinity ? '-' : stats.menosErros.total + ' erros'}${stats.menosErros.jogadores.length > 2 ? ` (+${stats.menosErros.jogadores.length - 2})` : ''}</div>
+            <div class="stat-overview-sub">${stats.menosErros.total === Infinity ? '-' : (stats.menosErros.total === 0 ? '0 vezes sem pontuar' : (stats.menosErros.total + ' erro' + (stats.menosErros.total !== 1 ? 's' : '') + (stats.menosErros.jogadores.length > 2 ? ` (+${stats.menosErros.jogadores.length - 2})` : '')))}</div>
         </div>
         <div class="stat-overview-card">
             <div class="stat-overview-icon">⚽</div>
@@ -285,13 +644,21 @@ function renderizarEstatisticasGerais(jogos, palpites) {
             <div class="stat-overview-value">${jogos.filter(j => j.jogado).length}</div>
             <div class="stat-overview-sub">finalizados</div>
         </div>
-        <div class="stat-overview-card">
-            <div class="stat-overview-icon">🔥</div>
-            <div class="stat-overview-label">Placar Mais Previsto</div>
-            <div class="stat-overview-value">${stats.placarMaisPrevisto.placar}</div>
-            <div class="stat-overview-sub">${stats.placarMaisPrevisto.vezes} vezes</div>
-        </div>
     `;
+
+    // Adicionar estatísticas aleatórias
+    aleatorias.forEach(estatistica => {
+        html += `
+            <div class="stat-overview-card stat-random">
+                <div class="stat-overview-icon">${estatistica.icon}</div>
+                <div class="stat-overview-label">${estatistica.label}</div>
+                <div class="stat-overview-value">${estatistica.value}</div>
+                <div class="stat-overview-sub">${estatistica.sub}</div>
+            </div>
+        `;
+    });
+
+    container.innerHTML = html;
 }
 
 // Renderizar classificação
