@@ -526,12 +526,12 @@ body {
 
 .match-score {
     font-family: 'Archivo Black', sans-serif;
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     color: var(--emerald);
     background: var(--gold);
-    padding: 0.25rem 0.75rem;
+    padding: 0.25rem 0.6rem;
     border-radius: 6px;
-    margin: 3px 0;
+    white-space: nowrap;
 }
 
 .match-score.pending {

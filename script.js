@@ -183,9 +183,8 @@ function renderizarJogos(jogos, palpites, filtro = 'hoje') {
         card.className = 'match-card' + (jogo.jogado ? ' played' : '');
 
         const scoreDisplay = jogo.placar
-            ? `${jogo.placar.timeA} × ${jogo.placar.timeB}`
+            ? `<span class="match-score">${jogo.placar.timeA} × ${jogo.placar.timeB}</span>`
             : '';
-        const scoreClass = jogo.jogado ? 'match-score' : 'match-score pending';
         const statusText = jogo.jogado ? 'Finalizado' : 'A jogar';
         const statusClass = jogo.jogado ? 'played' : 'pending';
 
@@ -226,12 +225,11 @@ function renderizarJogos(jogos, palpites, filtro = 'hoje') {
                 <div class="match-date">${dataHoraTexto}</div>
                 <div class="match-teams">
                     <span class="match-team">${jogo.timeA}</span>
-                    <span class="match-vs">VS</span>
+                    ${scoreDisplay ? scoreDisplay : '<span class="match-vs">VS</span>'}
                     <span class="match-team">${jogo.timeB}</span>
                 </div>
                 <span class="match-status ${statusClass}">${statusText}</span>
             </div>
-            ${scoreDisplay ? `<div class="${scoreClass}">${scoreDisplay}</div>` : ''}
             <div class="predictions-grid">
                 ${predictionsHTML}
             </div>
