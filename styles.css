@@ -134,7 +134,7 @@ body {
 
 .main-title {
     font-family: 'Archivo Black', sans-serif;
-    font-size: clamp(3rem, 12vw, 8rem);
+    font-size: clamp(2rem, 8vw, 5rem);
     line-height: 0.9;
     text-transform: uppercase;
     color: var(--white);
