@@ -16,8 +16,11 @@
       "dataHora": "2026-06-11T23:00:00",
       "timeA": "Coreia do Sul",
       "timeB": "República Tcheca",
-      "placar": null,
-      "jogado": false
+      "placar": {
+        "timeA": 2,
+        "timeB": 1
+      },
+      "jogado": true
     },
     {
       "id": 3,
