@@ -194,6 +194,22 @@
       "4": {
         "timeA": 2,
         "timeB": 1
+      },
+      "5": {
+        "timeA": 0,
+        "timeB": 2
+      },
+      "6": {
+        "timeA": 1,
+        "timeB": 1
+      },
+      "7": {
+        "timeA": 0,
+        "timeB": 2
+      },
+      "8": {
+        "timeA": 1,
+        "timeB": 3
       }
     },
     "Lia": {
@@ -229,6 +245,22 @@
       },
       "4": {
         "timeA": 1,
+        "timeB": 2
+      },
+      "5": {
+        "timeA": 1,
+        "timeB": 2
+      },
+      "6": {
+        "timeA": 3,
+        "timeB": 0
+      },
+      "7": {
+        "timeA": 0,
+        "timeB": 4
+      },
+      "8": {
+        "timeA": 0,
         "timeB": 2
       }
     },
