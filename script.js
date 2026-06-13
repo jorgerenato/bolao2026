@@ -640,13 +640,13 @@ function renderizarEstatisticasGerais(jogos, palpites) {
             <div class="stat-overview-value">${stats.menosErros.jogadores.length > 1 ? stats.menosErros.jogadores.slice(0, 2).join(' e ') : (stats.menosErros.jogadores[0] || '-')}</div>
             <div class="stat-overview-sub">${stats.menosErros.total === Infinity ? '-' : (stats.menosErros.total === 0 ? '0 vezes sem pontuar' : (stats.menosErros.total + ' vez' + (stats.menosErros.total !== 1 ? 'es' : '')))} sem pontuar</div>
         </div>
-        <div class="stat-overview-card">
-            <div class="stat-overview-icon">⚽</div>
-            <div class="stat-overview-label">Total de Jogos</div>
-            <div class="stat-overview-value">${jogos.filter(j => j.jogado).length}</div>
-            <div class="stat-overview-sub">finalizados</div>
-        </div>
     `;
+
+    // Adicionar contador de jogos no título
+    const jogosCount = document.getElementById('jogos-count');
+    if (jogosCount) {
+        jogosCount.textContent = `(${jogos.filter(j => j.jogado).length} jogos)`;
+    }
 
     // Adicionar estatísticas aleatórias
     aleatorias.forEach(estatistica => {

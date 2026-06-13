@@ -305,6 +305,16 @@ body {
     letter-spacing: 0.05em;
 }
 
+.jogos-count {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.4em;
+    font-weight: 400;
+    opacity: 0.6;
+    text-transform: none;
+    letter-spacing: normal;
+    margin-left: 0.5rem;
+}
+
 .trophy {
     font-size: 2.5rem;
     animation: trophyBounce 1s ease-in-out infinite;
