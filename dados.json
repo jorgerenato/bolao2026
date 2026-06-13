@@ -38,8 +38,11 @@
       "dataHora": "2026-06-12T22:00:00",
       "timeA": "Estados Unidos",
       "timeB": "Paraguai",
-      "placar": null,
-      "jogado": false
+      "placar": {
+        "timeA": 4,
+        "timeB": 1
+      },
+      "jogado": true
     },
     {
       "id": 5,
