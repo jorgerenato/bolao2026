@@ -176,6 +176,22 @@
       "4": {
         "timeA": 0,
         "timeB": 1
+      },
+      "5": {
+        "timeA": 0,
+        "timeB": 3
+      },
+      "6": {
+        "timeA": 2,
+        "timeB": 1
+      },
+      "7": {
+        "timeA": 0,
+        "timeB": 2
+      },
+      "8": {
+        "timeA": 1,
+        "timeB": 2
       }
     },
     "Jorge": {
