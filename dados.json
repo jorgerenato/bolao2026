@@ -260,6 +260,22 @@
       "4": {
         "timeA": 2,
         "timeB": 1
+      },
+      "5": {
+        "timeA": 0,
+        "timeB": 2
+      },
+      "6": {
+        "timeA": 2,
+        "timeB": 1
+      },
+      "7": {
+        "timeA": 0,
+        "timeB": 3
+      },
+      "8": {
+        "timeA": 1,
+        "timeB": 1
       }
     },
     "Raquel": {
@@ -311,6 +327,22 @@
       },
       "4": {
         "timeA": 1,
+        "timeB": 2
+      },
+      "5": {
+        "timeA": 1,
+        "timeB": 2
+      },
+      "6": {
+        "timeA": 2,
+        "timeB": 1
+      },
+      "7": {
+        "timeA": 1,
+        "timeB": 2
+      },
+      "8": {
+        "timeA": 2,
         "timeB": 2
       }
     }
