@@ -121,7 +121,9 @@ function getDadosExemplo() {
             "Alan": { 1: { timeA: 2, timeB: 1 } },
             "Fernanda": { 1: { timeA: 1, timeB: 1 } },
             "Jorge": { 1: { timeA: 3, timeB: 0 } },
-            "Raquel": { 1: { timeA: 2, timeB: 0 } }
+            "Lia": { 1: { timeA: 2, timeB: 1 } },
+            "Raquel": { 1: { timeA: 2, timeB: 0 } },
+            "Sueli": { 1: { timeA: 1, timeB: 2 } }
         }
     };
 }
@@ -561,7 +563,7 @@ function sortearEstatisticas(jogos, palpites, jogadores, quantidade = 2) {
 
 // Calcular e renderizar estatísticas gerais
 function renderizarEstatisticasGerais(jogos, palpites) {
-    const jogadores = ['Alan', 'Fernanda', 'Jorge', 'Raquel', 'Sueli'];
+    const jogadores = ['Alan', 'Fernanda', 'Jorge', 'Lia', 'Raquel', 'Sueli'];
     const stats = {
         maisExatos: { jogadores: [], total: 0 },
         menosErros: { jogadores: [], total: Infinity },
@@ -630,13 +632,13 @@ function renderizarEstatisticasGerais(jogos, palpites) {
             <div class="stat-overview-icon">🎯</div>
             <div class="stat-overview-label">Mais Placares Exatos</div>
             <div class="stat-overview-value">${stats.maisExatos.jogadores.length > 1 ? stats.maisExatos.jogadores.slice(0, 2).join(' e ') : (stats.maisExatos.jogadores[0] || '-')}</div>
-            <div class="stat-overview-sub">${stats.maisExatos.total} acerto${stats.maisExatos.total !== 1 ? 's' : ''}${stats.maisExatos.jogadores.length > 2 ? ` (+${stats.maisExatos.jogadores.length - 2})` : ''}</div>
+            <div class="stat-overview-sub">${stats.maisExatos.total} acerto${stats.maisExatos.total !== 1 ? 's' : ''}</div>
         </div>
         <div class="stat-overview-card">
             <div class="stat-overview-icon">🛡️</div>
             <div class="stat-overview-label">Menos Erros</div>
             <div class="stat-overview-value">${stats.menosErros.jogadores.length > 1 ? stats.menosErros.jogadores.slice(0, 2).join(' e ') : (stats.menosErros.jogadores[0] || '-')}</div>
-            <div class="stat-overview-sub">${stats.menosErros.total === Infinity ? '-' : (stats.menosErros.total === 0 ? '0 vezes sem pontuar' : (stats.menosErros.total + ' erro' + (stats.menosErros.total !== 1 ? 's' : '') + (stats.menosErros.jogadores.length > 2 ? ` (+${stats.menosErros.jogadores.length - 2})` : '')))}</div>
+            <div class="stat-overview-sub">${stats.menosErros.total === Infinity ? '-' : (stats.menosErros.total === 0 ? '0 vezes sem pontuar' : (stats.menosErros.total + ' vez' + (stats.menosErros.total !== 1 ? 'es' : '')))} sem pontuar</div>
         </div>
         <div class="stat-overview-card">
             <div class="stat-overview-icon">⚽</div>
@@ -663,7 +665,7 @@ function renderizarEstatisticasGerais(jogos, palpites) {
 
 // Renderizar classificação
 function renderizarClassificacao(jogos, palpites) {
-    const jogadores = ['Alan', 'Fernanda', 'Jorge', 'Raquel', 'Sueli'];
+    const jogadores = ['Alan', 'Fernanda', 'Jorge', 'Lia', 'Raquel', 'Sueli'];
     const pontuacoes = [];
 
     jogadores.forEach(jogador => {
@@ -715,7 +717,7 @@ function renderizarJogos(jogos, palpites, filtro = 'hoje') {
         return;
     }
 
-    const jogadores = ['Alan', 'Fernanda', 'Jorge', 'Raquel', 'Sueli'];
+    const jogadores = ['Alan', 'Fernanda', 'Jorge', 'Lia', 'Raquel', 'Sueli',];
 
     jogosFiltrados.forEach(jogo => {
         const card = document.createElement('div');

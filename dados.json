@@ -196,6 +196,24 @@
         "timeB": 1
       }
     },
+    "Lia": {
+      "1": {
+        "timeA": 2,
+        "timeB": 1
+      },
+      "2": {
+        "timeA": 1,
+        "timeB": 1
+      },
+      "3": {
+        "timeA": 1,
+        "timeB": 0
+      },
+      "4": {
+        "timeA": 2,
+        "timeB": 1
+      }
+    },
     "Raquel": {
       "1": {
         "timeA": 2,

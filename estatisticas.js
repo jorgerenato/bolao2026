@@ -73,7 +73,7 @@ function getBandeira(pais) {
 }
 
 // Jogadores disponíveis
-const JOGADORES = ['Alan', 'Fernanda', 'Jorge', 'Raquel', 'Sueli'];
+const JOGADORES = ['Alan', 'Fernanda', 'Jorge', 'Lia', 'Raquel', 'Sueli'];
 
 // Jogador selecionado - ler da URL ou usar o primeiro
 const urlParams = new URLSearchParams(window.location.search);
@@ -116,6 +116,7 @@ function getDadosExemplo() {
             "Alan": { 1: { timeA: 2, timeB: 1 } },
             "Fernanda": { 1: { timeA: 1, timeB: 1 } },
             "Jorge": { 1: { timeA: 3, timeB: 0 } },
+            "Lia": { 1: { timeA: 1, timeB: 0 } },
             "Raquel": { 1: { timeA: 2, timeB: 0 } },
             "Sueli": { 1: { timeA: 1, timeB: 2 } }
         }
@@ -436,8 +437,8 @@ function renderizarHighlights(stats) {
     if (stats.ultimoJogo) {
         const lastPoints = stats.ultimoJogo.pontos;
         const lastLabel = lastPoints === 3 ? 'Último: Placar Exato! 🎉' :
-                         lastPoints === 1 ? 'Último: Acertou vencedor' :
-                         lastPoints === 0 ? 'Último: Errou' : 'Último: Pendente';
+            lastPoints === 1 ? 'Último: Acertou vencedor' :
+                lastPoints === 0 ? 'Último: Errou' : 'Último: Pendente';
         highlights.push({
             icon: lastPoints === 3 ? '🎉' : lastPoints === 1 ? '👍' : '🤔',
             value: lastPoints !== null ? `+${lastPoints}` : '?',

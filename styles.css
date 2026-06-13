@@ -209,14 +209,32 @@ body {
     animation: statOverviewFade 0.5s ease-out backwards;
 }
 
-.stat-overview-card:nth-child(1) { animation-delay: 0.1s; }
-.stat-overview-card:nth-child(2) { animation-delay: 0.15s; }
-.stat-overview-card:nth-child(3) { animation-delay: 0.2s; }
-.stat-overview-card:nth-child(4) { animation-delay: 0.25s; }
+.stat-overview-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.stat-overview-card:nth-child(2) {
+    animation-delay: 0.15s;
+}
+
+.stat-overview-card:nth-child(3) {
+    animation-delay: 0.2s;
+}
+
+.stat-overview-card:nth-child(4) {
+    animation-delay: 0.25s;
+}
 
 @keyframes statOverviewFade {
-    0% { opacity: 0; transform: translateY(10px); }
-    100% { opacity: 1; transform: translateY(0); }
+    0% {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .stat-overview-card:hover {
@@ -310,7 +328,7 @@ body {
 
 .podium {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 0.75rem;
 }
 
@@ -349,6 +367,10 @@ body {
 
 .podium-item:nth-child(5) {
     animation-delay: 0.3s;
+}
+
+.podium-item:nth-child(6) {
+    animation-delay: 0.35s;
 }
 
 @keyframes podiumItem {
@@ -649,9 +671,12 @@ body {
 }
 
 @keyframes pulseLive {
-    0%, 100% {
+
+    0%,
+    100% {
         box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
     }
+
     50% {
         box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
     }
