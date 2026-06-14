@@ -82,8 +82,11 @@
       "dataHora": "2026-06-14T01:00:00",
       "timeA": "Austrália",
       "timeB": "Turquia",
-      "placar": null,
-      "jogado": false
+      "placar": {
+        "timeA": 2,
+        "timeB": 0
+      },
+      "jogado": true
     },
     {
       "id": 9,
