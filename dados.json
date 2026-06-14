@@ -1,4 +1,4 @@
-{
+"{
   "jogos": [
     {
       "id": 1,
@@ -60,8 +60,11 @@
       "dataHora": "2026-06-13T19:00:00",
       "timeA": "Brasil",
       "timeB": "Marrocos",
-      "placar": null,
-      "jogado": false
+      "placar": {
+        "timeA": 1,
+        "timeB": 1
+      },
+      "jogado": true
     },
     {
       "id": 7,
