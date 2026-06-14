@@ -1,5 +1,6 @@
 // Versão da aplicação (definida no index.html)
 const VERSION = window.APP_VERSION || '2';
+const JOGADORES = window.BolaoCore.JOGADORES;
 
 // Mapeamento de países para bandeiras (emojis)
 const BANDEIRAS = {
@@ -83,25 +84,7 @@ function isAoVivo(dataHora, jogado) {
 
 // Função para ler os dados (do elemento script inline ou do arquivo JSON)
 async function loadDados() {
-    // Tenta ler do elemento script inline primeiro
-    const dadosScript = document.getElementById('dados');
-    if (dadosScript) {
-        try {
-            return JSON.parse(dadosScript.textContent);
-        } catch (error) {
-            console.error('Erro ao fazer parse dos dados inline:', error);
-        }
-    }
-
-    // Se não tiver dados inline, tenta fetch do arquivo JSON
-    try {
-        const response = await fetch(`dados.json?v=${VERSION}`);
-        const data = await response.json();
-        return data;
-    } catch (error) {
-        console.error('Erro ao carregar dados:', error);
-        return getDadosExemplo();
-    }
+    return window.BolaoCore.loadDados();
 }
 
 // Dados de exemplo (fallback)
@@ -130,25 +113,7 @@ function getDadosExemplo() {
 
 // Calcular pontos de um palpite
 function calcularPontos(palpite, jogo) {
-    if (!jogo.jogado || !jogo.placar) return null;
-
-    const { timeA: palpiteA, timeB: palpiteB } = palpite;
-    const { timeA: realA, timeB: realB } = jogo.placar;
-
-    // Placar exato = 3 pontos
-    if (palpiteA === realA && palpiteB === realB) {
-        return 3;
-    }
-
-    // Acertou o vencedor ou empate = 1 ponto
-    const resultadoReal = realA > realB ? 'A' : (realB > realA ? 'B' : 'empate');
-    const resultadoPalpite = palpiteA > palpiteB ? 'A' : (palpiteB > palpiteA ? 'B' : 'empate');
-
-    if (resultadoReal === resultadoPalpite) {
-        return 1;
-    }
-
-    return 0;
+    return window.BolaoCore.calcularPontos(palpite, jogo);
 }
 
 // Filtrar jogos baseado no filtro selecionado
@@ -356,25 +321,17 @@ function calcSortudo(jogos, palpites, jogadores) {
         jogos.forEach(jogo => {
             if (!jogo.jogado || !jogo.placar) return;
 
-            // Verificar pontos de todos para este jogo
-            const pontosTodos = jogadores.map(j => {
-                const palpite = palpites[j]?.[jogo.id];
-                if (!palpite) return null;
-                return calcularPontos(palpite, jogo);
-            }).filter(p => p !== null);
+            const meuPalpite = palpites[jogador]?.[jogo.id];
+            const meusPontos = calcularPontos(meuPalpite, jogo);
+            if (!meusPontos) return;
 
-            // Este jogador acertou?
-            const meusPontos = calcularPontos(palpites[jogador]?.[jogo.id], jogo);
-            if (!meusPontos || meusPontos === 0) return;
-
-            // Verificar se fui o ÚNICO a acertar (todos os outros = 0)
-            const outrosAcertaram = pontosTodos.filter((p, i) => {
-                const outroJogador = jogadores[i];
+            const outrosAcertaram = jogadores.some((outroJogador) => {
                 if (outroJogador === jogador) return false;
-                return p > 0;
-            }).length;
+                const outroPalpite = palpites[outroJogador]?.[jogo.id];
+                return (calcularPontos(outroPalpite, jogo) || 0) > 0;
+            });
 
-            if (outrosAcertaram === 0) {
+            if (!outrosAcertaram) {
                 count++;
             }
         });
@@ -563,7 +520,7 @@ function sortearEstatisticas(jogos, palpites, jogadores, quantidade = 2) {
 
 // Calcular e renderizar estatísticas gerais
 function renderizarEstatisticasGerais(jogos, palpites) {
-    const jogadores = ['Alan', 'Fernanda', 'Jorge', 'Lia', 'Raquel', 'Sueli'];
+    const jogadores = JOGADORES;
     const stats = {
         maisExatos: { jogadores: [], total: 0 },
         menosErros: { jogadores: [], total: Infinity },
@@ -665,7 +622,7 @@ function renderizarEstatisticasGerais(jogos, palpites) {
 
 // Renderizar classificação
 function renderizarClassificacao(jogos, palpites) {
-    const jogadores = ['Alan', 'Fernanda', 'Jorge', 'Lia', 'Raquel', 'Sueli'];
+    const jogadores = JOGADORES;
     const pontuacoes = [];
 
     jogadores.forEach(jogador => {
@@ -717,7 +674,7 @@ function renderizarJogos(jogos, palpites, filtro = 'hoje') {
         return;
     }
 
-    const jogadores = ['Alan', 'Fernanda', 'Jorge', 'Lia', 'Raquel', 'Sueli',];
+    const jogadores = JOGADORES;
 
     jogosFiltrados.forEach(jogo => {
         const card = document.createElement('div');
@@ -810,9 +767,9 @@ async function mostrarUltimaAtualizacao() {
     const elemento = document.getElementById('last-update');
     if (!elemento) return;
 
-    // Tenta obter o timestamp do arquivo dados.json
+    // Tenta obter o timestamp da fonte de dados ativa
     try {
-        const response = await fetch(`dados.json?v=${VERSION}`);
+        const response = await fetch(window.BolaoCore.getDataSourceUrl());
         const lastModified = response.headers.get('Last-Modified');
 
         if (lastModified) {

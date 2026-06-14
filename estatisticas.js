@@ -88,15 +88,8 @@ let dados = null;
 // Função para ler os dados
 async function loadDados() {
     if (dados) return dados;
-
-    try {
-        const response = await fetch(`dados.json?v=${VERSION}`);
-        dados = await response.json();
-        return dados;
-    } catch (error) {
-        console.error('Erro ao carregar dados:', error);
-        return getDadosExemplo();
-    }
+    dados = await window.BolaoCore.loadDados();
+    return dados;
 }
 
 // Dados de exemplo (fallback)
@@ -125,25 +118,7 @@ function getDadosExemplo() {
 
 // Calcular pontos de um palpite
 function calcularPontos(palpite, jogo) {
-    if (!jogo.jogado || !jogo.placar) return null;
-
-    const { timeA: palpiteA, timeB: palpiteB } = palpite;
-    const { timeA: realA, timeB: realB } = jogo.placar;
-
-    // Placar exato = 3 pontos
-    if (palpiteA === realA && palpiteB === realB) {
-        return 3;
-    }
-
-    // Acertou o vencedor ou empate = 1 ponto
-    const resultadoReal = realA > realB ? 'A' : (realB > realA ? 'B' : 'empate');
-    const resultadoPalpite = palpiteA > palpiteB ? 'A' : (palpiteB > palpiteA ? 'B' : 'empate');
-
-    if (resultadoReal === resultadoPalpite) {
-        return 1;
-    }
-
-    return 0;
+    return window.BolaoCore.calcularPontos(palpite, jogo);
 }
 
 // Calcular ranking de todos os jogadores
