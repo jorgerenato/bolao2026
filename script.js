@@ -82,6 +82,10 @@ function isAoVivo(dataHora, jogado) {
     return diffMinutos >= 0 && diffMinutos <= 120; // Ao vivo se começou há até 2h
 }
 
+function isLocalhost() {
+    return ['localhost', '127.0.0.1', '::1'].includes(window.location.hostname);
+}
+
 // Função para ler os dados (do elemento script inline ou do arquivo JSON)
 async function loadDados() {
     return window.BolaoCore.loadDados();
@@ -225,7 +229,7 @@ function calcZebra(jogos, palpites, jogadores) {
         icon: '😱',
         label: 'A Zebra',
         value: `${totalZebra} ${totalZebra === 1 ? 'vez' : 'vezes'} sem acertador`,
-        sub: totalZebra === 1 ? 'Jogo sem ninguém acertar!' : 'Jogos sem ninguém acertar!'
+        sub: ''
     };
 }
 
@@ -462,7 +466,9 @@ function calcApostador(jogos, palpites, jogadores) {
         jogos.forEach(jogo => {
             const palpite = palpites[jogador]?.[jogo.id];
             if (palpite) {
-                placares.add(`${palpite.timeA}×${palpite.timeB}`);
+                const menor = Math.min(palpite.timeA, palpite.timeB);
+                const maior = Math.max(palpite.timeA, palpite.timeB);
+                placares.add(`${menor}×${maior}`);
             }
         });
         unicos[jogador] = placares.size;
@@ -580,8 +586,11 @@ function renderizarEstatisticasGerais(jogos, palpites) {
         }
     });
 
-    // Sortear 2 estatísticas aleatórias
-    const aleatorias = sortearEstatisticas(jogos, palpites, jogadores, 2);
+    const quantidadeEstatisticas = isLocalhost()
+        ? ESTATISTICAS_ALEATORIAS.length
+        : 2;
+
+    const aleatorias = sortearEstatisticas(jogos, palpites, jogadores, quantidadeEstatisticas);
 
     const container = document.getElementById('stats-overview');
     let html = `
