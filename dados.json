@@ -220,6 +220,22 @@
       "8": {
         "timeA": 1,
         "timeB": 2
+      },
+      "9": {
+        "timeA": 3,
+        "timeB": 1
+      },
+      "10": {
+        "timeA": 0,
+        "timeB": 2
+      },
+      "11": {
+        "timeA": 1,
+        "timeB": 1
+      },
+      "12": {
+        "timeA": 1,
+        "timeB": 1
       }
     },
     "Jorge": {
@@ -254,6 +270,22 @@
       "8": {
         "timeA": 1,
         "timeB": 3
+      },
+      "9": {
+        "timeA": 3,
+        "timeB": 0
+      },
+      "10": {
+        "timeA": 2,
+        "timeB": 2
+      },
+      "11": {
+        "timeA": 2,
+        "timeB": 1
+      },
+      "12": {
+        "timeA": 1,
+        "timeB": 0
       }
     },
     "Lia": {
@@ -288,6 +320,22 @@
       "8": {
         "timeA": 1,
         "timeB": 1
+      },
+      "9": {
+        "timeA": 4,
+        "timeB": 0
+      },
+      "10": {
+        "timeA": 2,
+        "timeB": 1
+      },
+      "11": {
+        "timeA": 1,
+        "timeB": 1
+      },
+      "12": {
+        "timeA": 2,
+        "timeB": 0
       }
     },
     "Raquel": {
@@ -322,6 +370,22 @@
       "8": {
         "timeA": 0,
         "timeB": 2
+      },
+      "9": {
+        "timeA": 4,
+        "timeB": 0
+      },
+      "10": {
+        "timeA": 1,
+        "timeB": 1
+      },
+      "11": {
+        "timeA": 1,
+        "timeB": 2
+      },
+      "12": {
+        "timeA": 2,
+        "timeB": 0
       }
     },
     "Sueli": {
@@ -356,6 +420,22 @@
       "8": {
         "timeA": 2,
         "timeB": 2
+      },
+      "9": {
+        "timeA": 3,
+        "timeB": 0
+      },
+      "10": {
+        "timeA": 1,
+        "timeB": 3
+      },
+      "11": {
+        "timeA": 2,
+        "timeB": 3
+      },
+      "12": {
+        "timeA": 1,
+        "timeB": 0
       }
     }
   }
