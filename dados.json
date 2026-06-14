@@ -71,8 +71,11 @@
       "dataHora": "2026-06-13T22:00:00",
       "timeA": "Haiti",
       "timeB": "Escócia",
-      "placar": null,
-      "jogado": false
+      "placar": {
+        "timeA": 0,
+        "timeB": 1
+      },
+      "jogado": true
     },
     {
       "id": 8,
