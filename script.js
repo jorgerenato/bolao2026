@@ -231,9 +231,10 @@ function calcConsenso(jogos, palpites, jogadores) {
     };
 }
 
-// 2. A Zebra - Jogo onde TODOS erraram o vencedor
+// 2. A Zebra - Total de jogos sem acertador
 function calcZebra(jogos, palpites, jogadores) {
-    const zebras = [];
+    let totalZebra = 0;
+
     jogos.forEach(jogo => {
         if (!jogo.jogado || !jogo.placar) return;
 
@@ -250,17 +251,16 @@ function calcZebra(jogos, palpites, jogadores) {
         });
 
         if (todosErraram && jogadores.some(j => palpites[j]?.[jogo.id])) {
-            zebras.push({ jogo, vencedor: vencedorReal === 'E' ? 'Empate' : (vencedorReal === 'A' ? jogo.timeA : jogo.timeB) });
+            totalZebra++;
         }
     });
 
-    if (zebras.length === 0) return null;
-    const aleatorio = zebras[Math.floor(Math.random() * zebras.length)];
+    if (totalZebra === 0) return null;
     return {
         icon: '😱',
         label: 'A Zebra',
-        value: `${aleatorio.jogo.timeA} vs ${aleatorio.jogo.timeB}`,
-        sub: 'Ninguém acertou o vencedor!'
+        value: `${totalZebra} ${totalZebra === 1 ? 'vez' : 'vezes'} sem acertador`,
+        sub: totalZebra === 1 ? 'Jogo sem ninguém acertar!' : 'Jogos sem ninguém acertar!'
     };
 }
 
