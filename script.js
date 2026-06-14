@@ -501,7 +501,7 @@ function calcDiscoArranhado(jogos, palpites, jogadores) {
         `,
         label: 'Disco Arranhado',
         value: vencedores.length > 2 ? `${vencedores[0]} e ${vencedores[1]}` : vencedores.join(' e '),
-        sub: `${placarDestaque} repetido ${maxRepeticoes}x`
+        sub: `${placarDestaque.split('×').reverse().join('×')} repetido ${maxRepeticoes}x`
     };
 }
 
@@ -583,6 +583,240 @@ function calcDoContra(jogos, palpites, jogadores) {
     };
 }
 
+function formatarDiaEstatistica(dataIso) {
+    return new Date(`${dataIso}T12:00:00`).toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit'
+    });
+}
+
+function agruparDias(jogos, palpites, jogadores) {
+    const dias = {};
+
+    jogos.forEach((jogo) => {
+        const dia = jogo.dataHora.slice(0, 10);
+        dias[dia] ||= { pontos: 0, jogos: 0, jogosFinalizados: 0 };
+        dias[dia].jogos++;
+
+        if (!jogo.jogado || !jogo.placar) return;
+
+        dias[dia].jogosFinalizados++;
+        jogadores.forEach((jogador) => {
+            const palpite = palpites[jogador]?.[jogo.id];
+            const pontos = calcularPontos(palpite, jogo);
+            if (pontos !== null) {
+                dias[dia].pontos += pontos;
+            }
+        });
+    });
+
+    return Object.entries(dias)
+        .filter(([, info]) => info.jogos > 0 && info.jogos === info.jogosFinalizados);
+}
+
+// 13. Dia do Apagão - Dia com menor pontuação total
+function calcDiaDoApagao(jogos, palpites, jogadores) {
+    const dias = agruparDias(jogos, palpites, jogadores);
+    const piorDia = dias
+        .sort((a, b) => a[1].pontos - b[1].pontos)[0];
+
+    if (!piorDia) return null;
+
+    return {
+        icon: '🌑',
+        label: 'Dia do Apagão',
+        value: formatarDiaEstatistica(piorDia[0]),
+        sub: `Apenas ${piorDia[1].pontos} ponto${piorDia[1].pontos !== 1 ? 's' : ''} em ${piorDia[1].jogos} jogo${piorDia[1].jogos !== 1 ? 's' : ''}`
+    };
+}
+
+// 14. Dia Iluminado - Dia com maior pontuação total
+function calcDiaIluminado(jogos, palpites, jogadores) {
+    const dias = agruparDias(jogos, palpites, jogadores);
+    const melhorDia = dias
+        .sort((a, b) => b[1].pontos - a[1].pontos)[0];
+
+    if (!melhorDia) return null;
+
+    return {
+        icon: '☀️',
+        label: 'Dia Iluminado',
+        value: formatarDiaEstatistica(melhorDia[0]),
+        sub: `${melhorDia[1].pontos} ponto${melhorDia[1].pontos !== 1 ? 's' : ''} em ${melhorDia[1].jogos} jogo${melhorDia[1].jogos !== 1 ? 's' : ''}`
+    };
+}
+
+// 15. Sumiu na Rodada - Quem mais zerou em um mesmo dia
+function calcSumiuNaRodada(jogos, palpites, jogadores) {
+    const zeradasPorDia = {};
+
+    jogadores.forEach((jogador) => {
+        zeradasPorDia[jogador] = {};
+    });
+
+    jogos.forEach((jogo) => {
+        if (!jogo.jogado || !jogo.placar) return;
+
+        const dia = jogo.dataHora.slice(0, 10);
+        jogadores.forEach((jogador) => {
+            const palpite = palpites[jogador]?.[jogo.id];
+            const pontos = calcularPontos(palpite, jogo);
+            if (pontos === 0) {
+                zeradasPorDia[jogador][dia] = (zeradasPorDia[jogador][dia] || 0) + 1;
+            }
+        });
+    });
+
+    let melhor = null;
+    Object.entries(zeradasPorDia).forEach(([jogador, dias]) => {
+        Object.entries(dias).forEach(([dia, total]) => {
+            if (!melhor || total > melhor.total) {
+                melhor = { jogador, dia, total };
+            }
+        });
+    });
+
+    if (!melhor || melhor.total === 0) return null;
+
+    return {
+        icon: '🫥',
+        label: 'Sumiu na Rodada',
+        value: melhor.jogador,
+        sub: `${melhor.total} zero${melhor.total !== 1 ? 's' : ''} em ${formatarDiaEstatistica(melhor.dia)}`
+    };
+}
+
+// 16. Virou Meme - Placar popular que todo mundo errou
+function calcVirouMeme(jogos, palpites, jogadores) {
+    let melhor = null;
+
+    jogos.forEach((jogo) => {
+        if (!jogo.jogado || !jogo.placar) return;
+
+        const contagem = {};
+        jogadores.forEach((jogador) => {
+            const palpite = palpites[jogador]?.[jogo.id];
+            if (!palpite) return;
+
+            const chave = `${palpite.timeA}×${palpite.timeB}`;
+            contagem[chave] ||= { total: 0, acertou: false };
+            contagem[chave].total++;
+
+            if (calcularPontos(palpite, jogo) > 0) {
+                contagem[chave].acertou = true;
+            }
+        });
+
+        Object.entries(contagem).forEach(([placar, info]) => {
+            if (info.total < 2 || info.acertou) return;
+
+            if (!melhor || info.total > melhor.total) {
+                melhor = {
+                    placar,
+                    total: info.total,
+                    jogo: `${jogo.timeA} vs ${jogo.timeB}`
+                };
+            }
+        });
+    });
+
+    if (!melhor) return null;
+
+    return {
+        icon: '🤡',
+        label: 'Virou Meme',
+        value: melhor.placar,
+        sub: `${melhor.total} pessoas erraram igual em ${melhor.jogo}`
+    };
+}
+
+// 17. Imitador - Quem mais repetiu exatamente o palpite de outra pessoa
+function calcImitador(jogos, palpites, jogadores) {
+    const imitacoes = {};
+    jogadores.forEach((imitador) => {
+        imitacoes[imitador] = {};
+        jogadores.forEach((original) => {
+            if (imitador !== original) {
+                imitacoes[imitador][original] = 0;
+            }
+        });
+    });
+
+    jogos.forEach((jogo) => {
+        jogadores.forEach((imitador) => {
+            const palpiteImitador = palpites[imitador]?.[jogo.id];
+            if (!palpiteImitador) return;
+
+            jogadores.forEach((original) => {
+                if (imitador === original) return;
+
+                const palpiteOriginal = palpites[original]?.[jogo.id];
+                if (!palpiteOriginal) return;
+
+                if (
+                    palpiteImitador.timeA === palpiteOriginal.timeA &&
+                    palpiteImitador.timeB === palpiteOriginal.timeB
+                ) {
+                    imitacoes[imitador][original]++;
+                }
+            });
+        });
+    });
+
+    let melhorPar = null;
+    Object.entries(imitacoes).forEach(([imitador, originais]) => {
+        Object.entries(originais).forEach(([original, total]) => {
+            if (!melhorPar || total > melhorPar.total) {
+                melhorPar = { imitador, original, total };
+            }
+        });
+    });
+
+    if (!melhorPar || melhorPar.total === 0) return null;
+
+    return {
+        icon: '🪞',
+        label: 'Imitador',
+        value: melhorPar.imitador,
+        sub: `${melhorPar.total} palpite${melhorPar.total !== 1 ? 's' : ''} ${melhorPar.total !== 1 ? 'iguais' : 'igual'} ao de ${melhorPar.original}`
+    };
+}
+
+// 18. Brilhou Sozinho - Quem mais pontuou em um unico dia
+function calcBrilhouSozinho(jogos, palpites, jogadores) {
+    let melhor = null;
+
+    jogadores.forEach((jogador) => {
+        const pontosPorDia = {};
+
+        jogos.forEach((jogo) => {
+            if (!jogo.jogado || !jogo.placar) return;
+
+            const palpite = palpites[jogador]?.[jogo.id];
+            const pontos = calcularPontos(palpite, jogo);
+            if (pontos === null) return;
+
+            const dia = jogo.dataHora.slice(0, 10);
+            pontosPorDia[dia] = (pontosPorDia[dia] || 0) + pontos;
+        });
+
+        Object.entries(pontosPorDia).forEach(([dia, pontos]) => {
+            if (!melhor || pontos > melhor.pontos) {
+                melhor = { jogador, dia, pontos };
+            }
+        });
+    });
+
+    if (!melhor) return null;
+
+    return {
+        icon: '✨',
+        label: 'Brilhou Sozinho',
+        value: melhor.jogador,
+        sub: `${melhor.pontos} ponto${melhor.pontos !== 1 ? 's' : ''} em ${formatarDiaEstatistica(melhor.dia)}`
+    };
+}
+
 // Pool de estatísticas aleatórias
 const ESTATISTICAS_ALEATORIAS = [
     calcConsenso,
@@ -596,7 +830,13 @@ const ESTATISTICAS_ALEATORIAS = [
     calcDefesaTotal,
     calcDiscoArranhado,
     calcReiDoEmpate,
-    calcDoContra
+    calcDoContra,
+    calcDiaDoApagao,
+    calcDiaIluminado,
+    calcSumiuNaRodada,
+    calcVirouMeme,
+    calcImitador,
+    calcBrilhouSozinho
 ];
 
 // Sortear estatísticas aleatórias diferentes
