@@ -227,7 +227,7 @@ function calcZebra(jogos, palpites, jogadores) {
     if (totalZebra === 0) return null;
     return {
         icon: '😱',
-        label: 'A Zebra',
+        label: 'Ninguém viu Vindo',
         value: `${totalZebra} ${totalZebra === 1 ? 'vez' : 'vezes'} sem acertador`,
         sub: ''
     };
@@ -254,7 +254,7 @@ function calcOtimista(jogos, palpites, jogadores) {
 
     return {
         icon: '🎪',
-        label: 'O Otimista',
+        label: 'Sonha com Goleada',
         value: otimistas.length > 2 ? `${otimistas[0]} e ${otimistas[1]}` : otimistas.join(' e '),
         sub: `${maxMedia.toFixed(1)} gols/jogo (média)`
     };
@@ -281,7 +281,7 @@ function calcConservador(jogos, palpites, jogadores) {
 
     return {
         icon: '🛡️',
-        label: 'O Conservador',
+        label: 'Placar Magro',
         value: conservadores.length > 2 ? `${conservadores[0]} e ${conservadores[1]}` : conservadores.join(' e '),
         sub: `${minMedia.toFixed(1)} gols/jogo (média)`
     };
@@ -349,7 +349,7 @@ function calcSortudo(jogos, palpites, jogadores) {
 
     return {
         icon: '🍀',
-        label: 'O Único',
+        label: 'Eu Avisei',
         value: vencedores.length > 2 ? `${vencedores[0]} e ${vencedores[1]}` : vencedores.join(' e '),
         sub: `${maxSorte}x foi o único acertador!`
     };
@@ -458,32 +458,128 @@ function calcDefesaTotal(jogos, palpites, jogadores) {
     };
 }
 
-// 10. O Apostador - Quem mais prevê placares diferentes (não repete)
-function calcApostador(jogos, palpites, jogadores) {
-    const unicos = {};
+// 10. Disco Arranhado - Quem mais repete o mesmo placar
+function calcDiscoArranhado(jogos, palpites, jogadores) {
+    const repeticoes = {};
+
     jogadores.forEach(jogador => {
-        const placares = new Set();
+        const contagem = {};
         jogos.forEach(jogo => {
             const palpite = palpites[jogador]?.[jogo.id];
             if (palpite) {
                 const menor = Math.min(palpite.timeA, palpite.timeB);
                 const maior = Math.max(palpite.timeA, palpite.timeB);
-                placares.add(`${menor}×${maior}`);
+                const chave = `${menor}×${maior}`;
+                contagem[chave] = (contagem[chave] || 0) + 1;
             }
         });
-        unicos[jogador] = placares.size;
+
+        const [placar, vezes] = Object.entries(contagem)
+            .sort((a, b) => b[1] - a[1])[0] || [null, 0];
+
+        repeticoes[jogador] = { placar, vezes };
     });
 
-    const maxUnicos = Math.max(...Object.values(unicos));
-    if (maxUnicos === 0) return null;
+    const maxRepeticoes = Math.max(...Object.values(repeticoes).map(item => item.vezes));
+    if (maxRepeticoes <= 1) return null;
 
-    const vencedores = Object.entries(unicos).filter(([j, u]) => u === maxUnicos).map(([j]) => j);
+    const vencedores = Object.entries(repeticoes)
+        .filter(([, item]) => item.vezes === maxRepeticoes)
+        .map(([jogador]) => jogador);
+    const placarDestaque = Object.values(repeticoes).find(item => item.vezes === maxRepeticoes)?.placar;
 
     return {
-        icon: '🎰',
-        label: 'O Apostador',
+        icon: `
+            <svg viewBox="0 0 64 64" aria-hidden="true" style="width: 1.4em; height: 1.4em;">
+                <circle cx="32" cy="32" r="28" fill="#111111"></circle>
+                <circle cx="32" cy="32" r="18" fill="none" stroke="#2f2f2f" stroke-width="2"></circle>
+                <circle cx="32" cy="32" r="9" fill="#d4af37"></circle>
+                <circle cx="32" cy="32" r="2.2" fill="#f8f4e8"></circle>
+                <path d="M32 14 A18 18 0 0 1 46 21" fill="none" stroke="#4a4a4a" stroke-width="2" stroke-linecap="round"></path>
+                <path d="M18 43 A18 18 0 0 1 14 32" fill="none" stroke="#4a4a4a" stroke-width="2" stroke-linecap="round"></path>
+            </svg>
+        `,
+        label: 'Disco Arranhado',
         value: vencedores.length > 2 ? `${vencedores[0]} e ${vencedores[1]}` : vencedores.join(' e '),
-        sub: `${maxUnicos} palpite${maxUnicos !== 1 ? 's' : ''} diferente${maxUnicos !== 1 ? 's' : ''}`
+        sub: `${placarDestaque} repetido ${maxRepeticoes}x`
+    };
+}
+
+// 11. Rei do Empate - Quem mais aposta em empates
+function calcReiDoEmpate(jogos, palpites, jogadores) {
+    const empates = {};
+
+    jogadores.forEach(jogador => {
+        let total = 0;
+        jogos.forEach(jogo => {
+            const palpite = palpites[jogador]?.[jogo.id];
+            if (palpite && palpite.timeA === palpite.timeB) {
+                total++;
+            }
+        });
+        empates[jogador] = total;
+    });
+
+    const maxEmpates = Math.max(...Object.values(empates));
+    if (maxEmpates === 0) return null;
+
+    const vencedores = Object.entries(empates)
+        .filter(([, total]) => total === maxEmpates)
+        .map(([jogador]) => jogador);
+
+    return {
+        icon: '🤝',
+        label: 'Rei do Empate',
+        value: vencedores.length > 2 ? `${vencedores[0]} e ${vencedores[1]}` : vencedores.join(' e '),
+        sub: `${maxEmpates} palpite${maxEmpates !== 1 ? 's' : ''} de empate`
+    };
+}
+
+// 12. Do Contra - Quem mais desafiou o consenso do grupo
+function calcDoContra(jogos, palpites, jogadores) {
+    const doContra = {};
+    jogadores.forEach(jogador => {
+        doContra[jogador] = 0;
+    });
+
+    jogos.forEach(jogo => {
+        const palpitesDoJogo = jogadores
+            .map((jogador) => ({ jogador, palpite: palpites[jogador]?.[jogo.id] }))
+            .filter((item) => item.palpite);
+
+        if (palpitesDoJogo.length < 3) return;
+
+        const contagemResultados = { A: 0, B: 0, E: 0 };
+        palpitesDoJogo.forEach(({ palpite }) => {
+            const resultado = palpite.timeA > palpite.timeB ? 'A' : (palpite.timeB > palpite.timeA ? 'B' : 'E');
+            contagemResultados[resultado]++;
+        });
+
+        const consenso = Object.entries(contagemResultados)
+            .sort((a, b) => b[1] - a[1])[0];
+
+        if (!consenso || consenso[1] < 2) return;
+
+        palpitesDoJogo.forEach(({ jogador, palpite }) => {
+            const resultado = palpite.timeA > palpite.timeB ? 'A' : (palpite.timeB > palpite.timeA ? 'B' : 'E');
+            if (resultado !== consenso[0]) {
+                doContra[jogador]++;
+            }
+        });
+    });
+
+    const maxDoContra = Math.max(...Object.values(doContra));
+    if (maxDoContra === 0) return null;
+
+    const vencedores = Object.entries(doContra)
+        .filter(([, total]) => total === maxDoContra)
+        .map(([jogador]) => jogador);
+
+    return {
+        icon: '🙃',
+        label: 'Do Contra',
+        value: vencedores.length > 2 ? `${vencedores[0]} e ${vencedores[1]}` : vencedores.join(' e '),
+        sub: `${maxDoContra} palpite${maxDoContra !== 1 ? 's' : ''} contra o consenso`
     };
 }
 
@@ -498,7 +594,9 @@ const ESTATISTICAS_ALEATORIAS = [
     calcAzarado,
     calcFestao,
     calcDefesaTotal,
-    calcApostador
+    calcDiscoArranhado,
+    calcReiDoEmpate,
+    calcDoContra
 ];
 
 // Sortear estatísticas aleatórias diferentes
