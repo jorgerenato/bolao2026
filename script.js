@@ -789,36 +789,83 @@ function calcImitador(jogos, palpites, jogadores) {
 
 // 18. Brilhou Sozinho - Quem mais pontuou em um unico dia
 function calcBrilhouSozinho(jogos, palpites, jogadores) {
-    let melhor = null;
+    // Primeiro, calcula os pontos por dia para cada jogador
+    const pontosPorDiaEJogador = {}; // { "2026-06-14": { "Alan": 10, "Jorge": 10, ... } }
 
-    jogadores.forEach((jogador) => {
-        const pontosPorDia = {};
+    jogos.forEach((jogo) => {
+        if (!jogo.jogado || !jogo.placar) return;
 
-        jogos.forEach((jogo) => {
-            if (!jogo.jogado || !jogo.placar) return;
+        const dia = jogo.dataHora.slice(0, 10);
+        if (!pontosPorDiaEJogador[dia]) {
+            pontosPorDiaEJogador[dia] = {};
+        }
 
+        jogadores.forEach((jogador) => {
             const palpite = palpites[jogador]?.[jogo.id];
             const pontos = calcularPontos(palpite, jogo);
-            if (pontos === null) return;
-
-            const dia = jogo.dataHora.slice(0, 10);
-            pontosPorDia[dia] = (pontosPorDia[dia] || 0) + pontos;
-        });
-
-        Object.entries(pontosPorDia).forEach(([dia, pontos]) => {
-            if (!melhor || pontos > melhor.pontos) {
-                melhor = { jogador, dia, pontos };
+            if (pontos !== null) {
+                pontosPorDiaEJogador[dia][jogador] = (pontosPorDiaEJogador[dia][jogador] || 0) + pontos;
             }
         });
     });
 
-    if (!melhor) return null;
+    // Calcula o dia anterior (ontem)
+    const ontem = new Date();
+    ontem.setDate(ontem.getDate() - 1);
+    const diaOntem = ontem.toISOString().slice(0, 10);
+
+    // Tenta mostrar dados do dia anterior primeiro
+    let melhorDia = null;
+    let maiorPontuacao = 0;
+    let jogadoresNoDia = [];
+
+    // Verifica se há dados do dia anterior
+    if (pontosPorDiaEJogador[diaOntem]) {
+        const pontosOntem = pontosPorDiaEJogador[diaOntem];
+        const maxPontosOntem = Math.max(...Object.values(pontosOntem).filter(p => p > 0), 0);
+
+        if (maxPontosOntem > 0) {
+            melhorDia = diaOntem;
+            maiorPontuacao = maxPontosOntem;
+            jogadoresNoDia = Object.entries(pontosOntem)
+                .filter(([_, p]) => p === maxPontosOntem)
+                .map(([j, _]) => j);
+        }
+    }
+
+    // Se não houver dados do dia anterior, busca o melhor dia geral
+    if (!melhorDia) {
+        Object.entries(pontosPorDiaEJogador).forEach(([dia, pontosPorJogador]) => {
+            const maxPontosDia = Math.max(...Object.values(pontosPorJogador).filter(p => p > 0), 0);
+
+            if (maxPontosDia > maiorPontuacao) {
+                maiorPontuacao = maxPontosDia;
+                melhorDia = dia;
+                jogadoresNoDia = Object.entries(pontosPorJogador)
+                    .filter(([_, p]) => p === maxPontosDia)
+                    .map(([j, _]) => j);
+            }
+        });
+    }
+
+    if (!melhorDia || maiorPontuacao === 0) return null;
+
+    // Se houver empate, mostra todos; caso contrário, mostra apenas o vencedor
+    const valor = jogadoresNoDia.length === 1
+        ? jogadoresNoDia[0]
+        : jogadoresNoDia.join(' & ');
+
+    // Verifica se o dia mostrado é ontem para ajustar o label
+    const eOntem = melhorDia === diaOntem;
+    const label = jogadoresNoDia.length === 1
+        ? (eOntem ? 'Brilhou Ontem' : 'Brilhou Sozinho')
+        : (eOntem ? 'Empate Ontem' : 'Empate do Dia');
 
     return {
         icon: '✨',
-        label: 'Brilhou Sozinho',
-        value: melhor.jogador,
-        sub: `${melhor.pontos} ponto${melhor.pontos !== 1 ? 's' : ''} em ${formatarDiaEstatistica(melhor.dia)}`
+        label: label,
+        value: valor,
+        sub: `${maiorPontuacao} ponto${maiorPontuacao !== 1 ? 's' : ''} em ${formatarDiaEstatistica(melhorDia)}`
     };
 }
 
