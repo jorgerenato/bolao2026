@@ -782,8 +782,8 @@ function calcImitador(jogos, palpites, jogadores) {
     return {
         icon: '🪞',
         label: 'Imitador',
-        value: melhorPar.imitador,
-        sub: `${melhorPar.total} palpite${melhorPar.total !== 1 ? 's' : ''} ${melhorPar.total !== 1 ? 'iguais' : 'igual'} ao de ${melhorPar.original}`
+        value: `${melhorPar.imitador} e ${melhorPar.original}`,
+        sub: `${melhorPar.total} palpites iguais`
     };
 }
 
@@ -853,7 +853,7 @@ function calcBrilhouSozinho(jogos, palpites, jogadores) {
     // Se houver empate, mostra todos; caso contrário, mostra apenas o vencedor
     const valor = jogadoresNoDia.length === 1
         ? jogadoresNoDia[0]
-        : jogadoresNoDia.join(' & ');
+        : jogadoresNoDia.join(', ');
 
     // Verifica se o dia mostrado é ontem para ajustar o label
     const eOntem = melhorDia === diaOntem;
