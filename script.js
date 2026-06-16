@@ -134,18 +134,39 @@ function filtrarJogos(jogos, filtro) {
         case 'hoje':
             return jogos.filter(jogo => {
                 const dataJogo = new Date(jogo.dataHora);
-                const dataJogoDia = new Date(dataJogo.getFullYear(), dataJogo.getMonth(), dataJogo.getDate());
-                return dataJogoDia.getTime() === hoje.getTime();
+                // Jogos antes das 06:00 são considerados do dia anterior
+                let diaBase = new Date(dataJogo.getFullYear(), dataJogo.getMonth(), dataJogo.getDate());
+                if (dataJogo.getHours() < 6) {
+                    diaBase.setDate(diaBase.getDate() - 1);
+                }
+                return diaBase.getTime() === hoje.getTime();
             });
 
         case 'proximos':
             return jogos.filter(jogo => {
+                if (jogo.jogado) return false;
                 const dataJogo = new Date(jogo.dataHora);
-                return dataJogo > agora && !jogo.jogado;
+                const hora = dataJogo.getHours();
+                // Jogos antes das 06:00 são considerados do dia anterior
+                let dataParaComparar = new Date(dataJogo);
+                if (hora < 6) {
+                    dataParaComparar.setDate(dataParaComparar.getDate() - 1);
+                }
+                return dataParaComparar > agora;
             }).sort((a, b) => new Date(a.dataHora) - new Date(b.dataHora));
 
         case 'anteriores':
-            return jogos.filter(jogo => jogo.jogado || new Date(jogo.dataHora) < agora);
+            return jogos.filter(jogo => {
+                if (jogo.jogado) return true;
+                const dataJogo = new Date(jogo.dataHora);
+                const hora = dataJogo.getHours();
+                // Jogos antes das 06:00 são considerados do dia anterior
+                let dataParaComparar = new Date(dataJogo);
+                if (hora < 6) {
+                    dataParaComparar.setDate(dataParaComparar.getDate() - 1);
+                }
+                return dataParaComparar < agora;
+            });
 
         case 'todos':
         default:
@@ -159,23 +180,34 @@ function formatarDataHora(dataHora) {
     const hoje = new Date();
     const amanha = new Date(hoje);
     amanha.setDate(amanha.getDate() + 1);
+    const ontem = new Date(hoje);
+    ontem.setDate(ontem.getDate() - 1);
 
-    const dataJogo = new Date(data.getFullYear(), data.getMonth(), data.getDate());
+    // Jogos antes das 06:00 são considerados do dia anterior
+    const hora = data.getHours();
+    let dataParaComparar = new Date(data.getFullYear(), data.getMonth(), data.getDate());
+    if (hora < 6) {
+        dataParaComparar.setDate(dataParaComparar.getDate() - 1);
+    }
+
     const dataHoje = new Date(hoje.getFullYear(), hoje.getMonth(), hoje.getDate());
     const dataAmanha = new Date(amanha.getFullYear(), amanha.getMonth(), amanha.getDate());
+    const dataOntem = new Date(ontem.getFullYear(), ontem.getMonth(), ontem.getDate());
 
     let dataTexto = '';
-    if (dataJogo.getTime() === dataHoje.getTime()) {
+    if (dataParaComparar.getTime() === dataHoje.getTime()) {
         dataTexto = 'Hoje';
-    } else if (dataJogo.getTime() === dataAmanha.getTime()) {
+    } else if (dataParaComparar.getTime() === dataAmanha.getTime()) {
         dataTexto = 'Amanhã';
+    } else if (dataParaComparar.getTime() === dataOntem.getTime()) {
+        dataTexto = 'Ontem';
     } else {
         const opcoes = { day: '2-digit', month: '2-digit' };
         dataTexto = data.toLocaleDateString('pt-BR', opcoes);
     }
 
-    const hora = data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    return `${dataTexto} · ${hora}`;
+    const horaFormatada = data.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+    return `${dataTexto} · ${horaFormatada}`;
 }
 
 // ========== FUNÇÕES DE ESTATÍSTICAS ALEATÓRIAS ==========
