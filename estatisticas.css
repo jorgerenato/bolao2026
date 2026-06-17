@@ -453,6 +453,58 @@
     margin-bottom: 2rem;
 }
 
+.history-filters {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    color: var(--white);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.filter-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: var(--gold);
+    transform: translateY(-1px);
+}
+
+.filter-btn.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: var(--emerald);
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
+}
+
+.filter-btn.filter-3.active {
+    background: var(--gold);
+    border-color: var(--gold);
+}
+
+.filter-btn.filter-1.active {
+    background: var(--emerald-light);
+    border-color: var(--emerald-light);
+    color: var(--white);
+}
+
+.filter-btn.filter-0.active {
+    background: var(--gray);
+    border-color: var(--gray);
+    color: var(--white);
+}
+
 .history-list {
     display: flex;
     flex-direction: column;

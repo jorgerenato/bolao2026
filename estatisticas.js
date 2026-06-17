@@ -85,6 +85,9 @@ let jogadorAtual = jogadorFromUrl && JOGADORES.includes(jogadorFromUrl)
 // Dados carregados
 let dados = null;
 
+// Filtro atual do histórico
+let filtroAtual = 'all';
+
 // Função para ler os dados
 async function loadDados() {
     if (dados) return dados;
@@ -239,6 +242,23 @@ function calcularEstatisticasJogador(jogador, jogos, palpites) {
     };
 }
 
+// Configurar filtros de histórico
+function configurarFiltros() {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Remover active de todos
+            filterBtns.forEach(b => b.classList.remove('active'));
+            // Adicionar active ao clicado
+            btn.classList.add('active');
+            // Atualizar filtro
+            filtroAtual = btn.getAttribute('data-filter');
+            // Re-renderizar histórico
+            renderizarEstatisticas();
+        });
+    });
+}
+
 // Renderizar tabs de seleção de jogador
 function renderizarPlayerTabs() {
     const tabsContainer = document.getElementById('player-tabs');
@@ -376,7 +396,21 @@ function renderizarHistory(stats) {
     const list = document.getElementById('history-list');
     list.innerHTML = '';
 
-    stats.historico.forEach((item, index) => {
+    // Filtrar histórico baseado no filtro atual
+    const historicoFiltrado = stats.historico.filter(item => {
+        if (filtroAtual === 'all') return true;
+        if (filtroAtual === '3') return item.pontos === 3;
+        if (filtroAtual === '1') return item.pontos === 1;
+        if (filtroAtual === '0') return item.pontos === 0;
+        return true;
+    });
+
+    if (historicoFiltrado.length === 0) {
+        list.innerHTML = '<p style="text-align: center; color: var(--gray); padding: 2rem;">Nenhum resultado encontrado para este filtro.</p>';
+        return;
+    }
+
+    historicoFiltrado.forEach((item, index) => {
         const historyItem = document.createElement('div');
         historyItem.className = `history-item ${item.acertou}`;
 
@@ -491,6 +525,7 @@ function renderizarEstatisticas() {
 // Inicializar
 async function init() {
     await loadDados();
+    configurarFiltros();
     renderizarPlayerTabs();
     renderizarEstatisticas();
 }
