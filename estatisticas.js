@@ -316,16 +316,26 @@ function renderizarPerformanceChart(stats) {
     const chart = document.getElementById('performance-chart');
     chart.innerHTML = '';
 
-    stats.desempenho.forEach((pontos, index) => {
+    stats.historico.forEach((item, index) => {
+        const pontos = item.pontos;
         const bar = document.createElement('div');
         bar.className = 'performance-bar';
 
         const altura = pontos === null ? 10 : (pontos === 0 ? 20 : (pontos * 33));
         const pontosClass = pontos === null ? 'pending' : `points-${pontos}`;
 
+        // Formatar o tooltip com times e placar
+        const palpiteDisplay = `${item.palpite.timeA} × ${item.palpite.timeB}`;
+        const realDisplay = item.jogo.placar
+            ? `${item.jogo.placar.timeA} × ${item.jogo.placar.timeB}`
+            : 'a jogar';
+        const statusDisplay = pontos === null ? 'Pendente' : `+${pontos} pontos`;
+
         bar.innerHTML = `
             <div class="performance-bar-tooltip">
-                Jogo ${index + 1}: ${pontos === null ? 'Pendente' : pontos + ' pontos'}
+                ${getBandeira(item.jogo.timeA)} ${item.jogo.timeA} vs ${item.jogo.timeB} ${getBandeira(item.jogo.timeB)}<br>
+                Palpite: ${palpiteDisplay} · Real: ${realDisplay}<br>
+                ${statusDisplay}
             </div>
             <div class="performance-bar-fill ${pontosClass}" style="height: ${altura}%"></div>
             <div class="performance-bar-label">${index + 1}</div>
