@@ -325,23 +325,49 @@ function renderizarPerformanceChart(stats) {
         const pontosClass = pontos === null ? 'pending' : `points-${pontos}`;
 
         // Formatar o tooltip com times e placar
-        const palpiteDisplay = `${item.palpite.timeA} × ${item.palpite.timeB}`;
-        const realDisplay = item.jogo.placar
-            ? `${item.jogo.placar.timeA} × ${item.jogo.placar.timeB}`
-            : 'a jogar';
+        const jogoDisplay = item.jogo.placar
+            ? `${getBandeira(item.jogo.timeA)} ${item.jogo.timeA} ${item.jogo.placar.timeA} × ${item.jogo.placar.timeB} ${item.jogo.timeB} ${getBandeira(item.jogo.timeB)}`
+            : `${getBandeira(item.jogo.timeA)} ${item.jogo.timeA} vs ${item.jogo.timeB} ${getBandeira(item.jogo.timeB)}`;
+        const palpiteDisplay = `Palpite: ${item.palpite.timeA} × ${item.palpite.timeB}`;
         const statusDisplay = pontos === null ? 'Pendente' : `+${pontos} pontos`;
 
         bar.innerHTML = `
-            <div class="performance-bar-tooltip">
-                ${getBandeira(item.jogo.timeA)} ${item.jogo.timeA} vs ${item.jogo.timeB} ${getBandeira(item.jogo.timeB)}<br>
-                Palpite: ${palpiteDisplay} · Real: ${realDisplay}<br>
+            <div class="performance-bar-fill ${pontosClass}" style="height: ${altura}%" data-tooltip="
+                ${jogoDisplay}
+                ${palpiteDisplay}
                 ${statusDisplay}
-            </div>
-            <div class="performance-bar-fill ${pontosClass}" style="height: ${altura}%"></div>
+            "></div>
             <div class="performance-bar-label">${index + 1}</div>
         `;
 
         chart.appendChild(bar);
+    });
+
+    // Criar tooltip fixo único
+    let tooltip = document.getElementById('performance-tooltip');
+    if (!tooltip) {
+        tooltip = document.createElement('div');
+        tooltip.id = 'performance-tooltip';
+        tooltip.className = 'performance-tooltip';
+        document.body.appendChild(tooltip);
+    }
+
+    // Adicionar eventos de hover
+    chart.querySelectorAll('.performance-bar-fill').forEach(bar => {
+        bar.addEventListener('mouseenter', (e) => {
+            const text = e.target.getAttribute('data-tooltip');
+            tooltip.innerHTML = text.replace(/\n/g, '<br>');
+            tooltip.style.opacity = '1';
+
+            // Posicionar tooltip acima da barra
+            const rect = e.target.getBoundingClientRect();
+            tooltip.style.left = (rect.left + rect.width / 2) + 'px';
+            tooltip.style.top = (rect.top - 10) + 'px';
+        });
+
+        bar.addEventListener('mouseleave', () => {
+            tooltip.style.opacity = '0';
+        });
     });
 }
 
