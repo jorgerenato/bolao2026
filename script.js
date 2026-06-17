@@ -166,7 +166,7 @@ function filtrarJogos(jogos, filtro) {
                     dataParaComparar.setDate(dataParaComparar.getDate() - 1);
                 }
                 return dataParaComparar < agora;
-            });
+            }).sort((a, b) => new Date(b.dataHora) - new Date(a.dataHora));
 
         case 'todos':
         default:
