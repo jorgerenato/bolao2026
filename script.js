@@ -901,6 +901,75 @@ function calcBrilhouSozinho(jogos, palpites, jogadores) {
     };
 }
 
+// 19. Mais Placares Exatos - Quem mais acertou o placar exato
+function calcMaisExatos(jogos, palpites, jogadores) {
+    let maisExatos = { jogadores: [], total: 0 };
+
+    jogadores.forEach(jogador => {
+        let exatos = 0;
+        jogos.forEach(jogo => {
+            const palpite = palpites[jogador]?.[jogo.id];
+            if (palpite && jogo.jogado) {
+                const pontos = calcularPontos(palpite, jogo);
+                if (pontos === 3) exatos++;
+            }
+        });
+
+        if (exatos > maisExatos.total) {
+            maisExatos = { jogadores: [jogador], total: exatos };
+        } else if (exatos === maisExatos.total && exatos > 0) {
+            maisExatos.jogadores.push(jogador);
+        }
+    });
+
+    if (maisExatos.total === 0) return null;
+
+    return {
+        icon: '🎯',
+        label: 'Mais Placares Exatos',
+        value: maisExatos.jogadores.length > 1 ? maisExatos.jogadores.slice(0, 2).join(' e ') : (maisExatos.jogadores[0] || '-'),
+        sub: `${maisExatos.total} acerto${maisExatos.total !== 1 ? 's' : ''}`
+    };
+}
+
+// 20. Menos Erros - Quem menos ficou sem pontuar
+function calcMenosErros(jogos, palpites, jogadores) {
+    let menosErros = { jogadores: [], total: Infinity };
+
+    jogadores.forEach(jogador => {
+        let erros = 0;
+        let totalJogos = 0;
+        jogos.forEach(jogo => {
+            const palpite = palpites[jogador]?.[jogo.id];
+            if (palpite && jogo.jogado) {
+                totalJogos++;
+                const pontos = calcularPontos(palpite, jogo);
+                if (pontos === 0) erros++;
+            }
+        });
+
+        // Apenas considera quem tem pelo menos 1 jogo jogado
+        if (totalJogos > 0 && erros < menosErros.total) {
+            menosErros = { jogadores: [jogador], total: erros };
+        } else if (totalJogos > 0 && erros === menosErros.total) {
+            menosErros.jogadores.push(jogador);
+        }
+    });
+
+    if (menosErros.total === Infinity) return null;
+
+    const sub = menosErros.total === 0
+        ? 'Nunca deixou de pontuar'
+        : `${menosErros.total} vez${menosErros.total !== 1 ? 'es' : ''} sem pontuar`;
+
+    return {
+        icon: '🛡️',
+        label: 'Menos Erros',
+        value: menosErros.jogadores.length > 1 ? menosErros.jogadores.slice(0, 2).join(' e ') : (menosErros.jogadores[0] || '-'),
+        sub
+    };
+}
+
 // Pool de estatísticas aleatórias
 const ESTATISTICAS_ALEATORIAS = [
     calcConsenso,
@@ -920,7 +989,9 @@ const ESTATISTICAS_ALEATORIAS = [
     calcSumiuNaRodada,
     calcVirouMeme,
     calcImitador,
-    calcBrilhouSozinho
+    calcBrilhouSozinho,
+    calcMaisExatos,
+    calcMenosErros
 ];
 
 // Sortear estatísticas aleatórias diferentes
@@ -950,43 +1021,10 @@ function sortearEstatisticas(jogos, palpites, jogadores, quantidade = 2) {
 function renderizarEstatisticasGerais(jogos, palpites) {
     const jogadores = JOGADORES;
     const stats = {
-        maisExatos: { jogadores: [], total: 0 },
-        menosErros: { jogadores: [], total: Infinity },
         totalPalpites: 0,
         jogosDisputados: null,
         placarMaisPrevisto: { placar: '-', vezes: 0 }
     };
-
-    // Contar palpites exatos e erros por jogador
-    jogadores.forEach(jogador => {
-        let exatos = 0;
-        let erros = 0;
-        let totalJogos = 0;
-
-        jogos.forEach(jogo => {
-            const palpite = palpites[jogador]?.[jogo.id];
-            if (palpite && jogo.jogado) {
-                totalJogos++;
-                const pontos = calcularPontos(palpite, jogo);
-                if (pontos === 3) exatos++;
-                if (pontos === 0) erros++;
-            }
-        });
-
-        // Mais placares exatos
-        if (exatos > stats.maisExatos.total) {
-            stats.maisExatos = { jogadores: [jogador], total: exatos };
-        } else if (exatos === stats.maisExatos.total && exatos > 0) {
-            stats.maisExatos.jogadores.push(jogador);
-        }
-
-        // Menos erros (apenas considera quem tem pelo menos 1 jogo jogado)
-        if (totalJogos > 0 && erros < stats.menosErros.total) {
-            stats.menosErros = { jogadores: [jogador], total: erros };
-        } else if (totalJogos > 0 && erros === stats.menosErros.total) {
-            stats.menosErros.jogadores.push(jogador);
-        }
-    });
 
     // Contar total de palpites e placar mais previsto
     const contagemPalpites = {};
@@ -1010,25 +1048,12 @@ function renderizarEstatisticasGerais(jogos, palpites) {
 
     const quantidadeEstatisticas = isLocalhost()
         ? ESTATISTICAS_ALEATORIAS.length
-        : 2;
+        : 4;
 
     const aleatorias = sortearEstatisticas(jogos, palpites, jogadores, quantidadeEstatisticas);
 
     const container = document.getElementById('stats-overview');
-    let html = `
-        <div class="stat-overview-card">
-            <div class="stat-overview-icon">🎯</div>
-            <div class="stat-overview-label">Mais Placares Exatos</div>
-            <div class="stat-overview-value">${stats.maisExatos.jogadores.length > 1 ? stats.maisExatos.jogadores.slice(0, 2).join(' e ') : (stats.maisExatos.jogadores[0] || '-')}</div>
-            <div class="stat-overview-sub">${stats.maisExatos.total} acerto${stats.maisExatos.total !== 1 ? 's' : ''}</div>
-        </div>
-        <div class="stat-overview-card">
-            <div class="stat-overview-icon">🛡️</div>
-            <div class="stat-overview-label">Menos Erros</div>
-            <div class="stat-overview-value">${stats.menosErros.jogadores.length > 1 ? stats.menosErros.jogadores.slice(0, 2).join(' e ') : (stats.menosErros.jogadores[0] || '-')}</div>
-            <div class="stat-overview-sub">${stats.menosErros.total === Infinity ? '-' : (stats.menosErros.total === 0 ? '0 vezes sem pontuar' : (stats.menosErros.total + ' vez' + (stats.menosErros.total !== 1 ? 'es' : '')))} sem pontuar</div>
-        </div>
-    `;
+    let html = '';
 
     // Adicionar contador de jogos no título
     const jogosCount = document.getElementById('jogos-count');
