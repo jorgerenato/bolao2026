@@ -156,17 +156,10 @@ function filtrarJogos(jogos, filtro) {
             }).sort((a, b) => new Date(a.dataHora) - new Date(b.dataHora));
 
         case 'anteriores':
-            return jogos.filter(jogo => {
-                if (jogo.jogado) return true;
-                const dataJogo = new Date(jogo.dataHora);
-                const hora = dataJogo.getHours();
-                // Jogos antes das 06:00 são considerados do dia anterior
-                let dataParaComparar = new Date(dataJogo);
-                if (hora < 6) {
-                    dataParaComparar.setDate(dataParaComparar.getDate() - 1);
-                }
-                return dataParaComparar < agora;
-            }).sort((a, b) => new Date(b.dataHora) - new Date(a.dataHora));
+            // Só aparece em "Jogados" se o resultado final estiver cadastrado
+            return jogos
+                .filter(jogo => jogo.jogado && jogo.placar)
+                .sort((a, b) => new Date(b.dataHora) - new Date(a.dataHora));
 
         case 'todos':
         default:
