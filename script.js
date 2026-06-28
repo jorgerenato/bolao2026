@@ -319,32 +319,7 @@ function calcConservador(jogos, palpites, jogadores) {
 
 // 5. O Troller - Quem mais prevê placares improváveis (soma >= 6)
 function calcTroller(jogos, palpites, jogadores) {
-    const trolls = {};
-    jogadores.forEach(jogador => {
-        let count = 0;
-        jogos.forEach(jogo => {
-            const palpite = palpites[jogador]?.[jogo.id];
-            if (palpite) {
-                const total = palpite.timeA + palpite.timeB;
-                if (total >= 6) {
-                    count++;
-                }
-            }
-        });
-        trolls[jogador] = count;
-    });
-
-    const maxTroll = Math.max(...Object.values(trolls));
-    if (maxTroll === 0) return null;
-
-    const vencedores = Object.entries(trolls).filter(([j, c]) => c === maxTroll).map(([j]) => j);
-
-    return {
-        icon: '😈',
-        label: 'O Troller',
-        value: vencedores.length > 2 ? `${vencedores[0]} e ${vencedores[1]}` : vencedores.join(' e '),
-        sub: `${maxTroll} palpite${maxTroll !== 1 ? 's' : ''} maluco${maxTroll !== 1 ? 's' : ''}`
-    };
+    return false;
 }
 
 // 6. O Sortudo - Quem foi o ÚNICO a acertar o resultado de um jogo
