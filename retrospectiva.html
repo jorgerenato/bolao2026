@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Retrospectiva · Fase de Grupos — BOLÃO COPA 2026</title>
+    <meta name="description" content="A retrospectiva da fase de grupos do bolão da Copa 2026 — 72 jogos, pontos, zebras e frases prontas.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='88'>🏆</text></svg>">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo+Black&family=Space+Mono:wght@400;700&family=Space+Grotesk:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <script>
+        window.APP_VERSION = '12';
+    </script>
+    <link rel="stylesheet" href="wrapped.css?v=11">
+    <link rel="stylesheet" href="retrospectiva.css?v=12">
+</head>
+
+<body class="wrapped">
+    <!-- Atmosfera: grão + blobs de luz que derivam -->
+    <div class="atmosphere" aria-hidden="true">
+        <div class="grain"></div>
+        <span class="blob blob-a"></span>
+        <span class="blob blob-b"></span>
+        <span class="blob blob-c"></span>
+    </div>
+
+    <!-- Barra de progresso contínua -->
+    <div class="progress" id="progress" aria-hidden="true">
+        <div class="progress-fill" id="progress-fill"></div>
+    </div>
+
+    <!-- Deck de slides (preenchido por retrospectiva.js) -->
+    <main class="deck" id="deck"></main>
+
+    <!-- HUD de navegação -->
+    <nav class="hud">
+        <button class="hud-btn hud-prev" id="nav-prev" type="button" aria-label="Slide anterior">‹</button>
+        <a class="hud-btn hud-exit" href="index.html" aria-label="Sair da retrospectiva">✕</a>
+        <button class="hud-btn hud-next" id="nav-next" type="button" aria-label="Próximo slide">›</button>
+    </nav>
+
+    <!-- Zonas de toque laterais (clicar avança/volta) -->
+    <div class="tapzones" aria-hidden="true">
+        <button class="tapzone" id="tap-prev" type="button" aria-label="Voltar"></button>
+        <button class="tapzone" id="tap-next" type="button" aria-label="Avançar"></button>
+    </div>
+
+    <!-- Dica inicial -->
+    <div class="hint" id="hint">use as setas → ou toque para navegar</div>
+
+    <script src="core.js?v=12"></script>
+    <script src="retrospectiva.js?v=12"></script>
+</body>
+
+</html>
