@@ -78,7 +78,7 @@
     let fonteAtual = null;
 
     function buildVersionedUrl(path) {
-        return `${path}?v=${VERSION}`;
+        return `${path}?v=${VERSION}&t=${Date.now()}`;
     }
 
     function getBandeira(pais) {
