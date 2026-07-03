@@ -651,7 +651,7 @@ function calcDiaIluminado(jogos, palpites, jogadores) {
     };
 }
 
-// 15. Sumiu na Rodada - Quem mais zerou em um mesmo dia
+// 15. Sumiu na Rodada - Quem mais zerou no dia mais recente com jogos
 function calcSumiuNaRodada(jogos, palpites, jogadores) {
     const zeradasPorDia = {};
 
@@ -672,16 +672,21 @@ function calcSumiuNaRodada(jogos, palpites, jogadores) {
         });
     });
 
-    let melhor = null;
+    // Prioriza o dia mais recente em que alguém zerou;
+    // em empate no dia, escolhe quem mais zerou naquela rodada.
+    const candidatos = [];
     Object.entries(zeradasPorDia).forEach(([jogador, dias]) => {
         Object.entries(dias).forEach(([dia, total]) => {
-            if (!melhor || total > melhor.total) {
-                melhor = { jogador, dia, total };
+            if (total > 0) {
+                candidatos.push({ jogador, dia, total });
             }
         });
     });
 
-    if (!melhor || melhor.total === 0) return null;
+    if (!candidatos.length) return null;
+
+    candidatos.sort((a, b) => b.dia.localeCompare(a.dia) || b.total - a.total);
+    const melhor = candidatos[0];
 
     return {
         icon: '🫥',
